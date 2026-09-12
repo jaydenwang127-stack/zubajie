@@ -8,6 +8,7 @@ Phase 1 only: static bilingual site on free hosting (his account, Elaine as coll
 ## Source of truth
 - `data/items.json`: 131 items scraped verbatim from the old site (5 price tiers: sale, d2 = 兩天一夜, add = 每加一日, d5 = 五至十天, mo = 月租). `conf` non-empty means the old site listed two different prices; keep the flag visible on the product page until the owner confirms.
 - `data/photomap.json`: old-site image filename → `photos/pNN.jpg`.
+- `data/reviews.json`: 16 hand-picked Google Maps reviews (harvested 2026-09-12, 60 of 125 read) with our translations. Quoted verbatim; never edit a customer's words. Rating/count are as Google showed that day — refresh them when rebuilding months later.
 - `prototype/`: the approved single-file prototype (hash router) and its Python generator. Copy is the look and structure to reproduce as real pages. `photos/` are the owner's images pulled from his site, 240px thumbs plus 8 larger ones (`bigNN.jpg`).
 - `docs/`: research notes 01–04 from the Cowork sessions.
 

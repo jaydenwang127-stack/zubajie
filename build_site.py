@@ -46,6 +46,18 @@ T = {
     'nav_rent':    ('租借裝備', 'Rent gear'),
     'nav_policy':  ('租借規則', 'Rental policy'),
     'nav_find':    ('如何前往', 'Find us'),
+    'nav_reviews': ('顧客評論', 'Reviews'),
+    'h_reviews':   ('顧客評論', 'Customer reviews'),
+    'rv_google':   ('Google 評論', 'Google reviews'),
+    'rv_count':    ('{n} 則評論', '{n} reviews'),
+    'rv_lead':     ('以下評論摘錄自租八借在 Google 地圖上的商家頁面，由顧客親自撰寫。',
+                    'These are quoted from the 租八借 listing on Google Maps, written by customers themselves.'),
+    'rv_all':      ('在 Google 地圖看全部 {n} 則評論', 'Read all {n} reviews on Google Maps'),
+    'rv_translated': ('翻譯自英文評論', 'Translated from Chinese'),
+    'rv_trimmed':  ('節錄', 'Excerpt'),
+    'rv_source':   ('評論原文照登，日期為 2026 年 9 月在 Google 上顯示的相對時間；翻譯為本站提供。評分與則數也以 Google 頁面為準。',
+                    'Reviews are quoted as written; dates are the relative dates Google showed in September 2026; translations are ours. The rating and count are as shown on Google.'),
+    'rv_badge':    ('Google 評論 {r} ★ · {n} 則', 'Google {r} ★ · {n} reviews'),
     'nav_contact': ('聯絡我們', 'Contact'),
     'menu':        ('選單', 'Menu'),
     'lang_label':  ('語言', 'Language'),
@@ -207,6 +219,8 @@ def load_items():
         out.append(row)
     return out
 
+REVIEWS = json.loads((ROOT / 'data' / 'reviews.json').read_text())
+
 ITEMS = load_items()
 BY_PAGE = {c['slug']: [i for i in ITEMS if i['page'] == c['page']] for c in CATS}
 assert sum(len(v) for v in BY_PAGE.values()) == len(ITEMS), 'every item must map to a category'
@@ -246,6 +260,11 @@ def img_or_placeholder(c, it, cls=''):
 def hours_rows(lang):
     return ''.join(f'<div><dt>{pick(d, lang)}</dt><dd>{pick(h, lang)}</dd></div>' for d, h in HOURS)
 
+def stars(n, size=''):
+    full = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg>'
+    off = full.replace('<svg', '<svg class="off"')
+    return f'<span class="stars{size}" role="img" aria-label="{n}/5">{full * n}{off * (5 - n)}</span>'
+
 def map_embed(lang):
     src = MAP_EMBED.format(hl='zh-TW' if lang == 'zh' else 'en')
     return (f'<div class="map"><iframe src="{src}" title="{t("map_title", lang)}" loading="lazy" '
@@ -281,6 +300,7 @@ def header(c, nav):
       </div>
       <a href="{c.link('policy.html')}"{cur('policy')}>{t('nav_policy', L)}</a>
       <a href="{c.link('find.html')}"{cur('find')}>{t('nav_find', L)}</a>
+      <a href="{c.link('reviews.html')}"{cur('reviews')}>{t('nav_reviews', L)}</a>
       <a href="{c.link('contact.html')}"{cur('contact')}>{t('nav_contact', L)}</a>
     </nav>
     <div class="lang" aria-label="{t('lang_label', L)}"><a href="{zh_href}" lang="zh-Hant-TW"{zh_cur}>中文</a><a href="{en_href}" lang="en"{en_cur}>EN</a></div>
@@ -293,6 +313,7 @@ def header(c, nav):
         <div class="sub">{cat_links(c, counts=False)}</div>
         <a href="{c.link('policy.html')}">{t('nav_policy', L)}</a>
         <a href="{c.link('find.html')}">{t('nav_find', L)}</a>
+        <a href="{c.link('reviews.html')}">{t('nav_reviews', L)}</a>
         <a href="{c.link('contact.html')}">{t('nav_contact', L)}</a>
       </div>
     </details>
@@ -365,6 +386,7 @@ def page_home(lang):
   <p>{t('hero_p', lang)}</p>
   <div class="hero-cta"><a class="btn" href="{c.link('rent/camping.html')}">{t('cta_browse', lang)}</a><a class="btn ghost" href="{TEL_HREF}">{t('cta_call', lang)}</a></div>
   <div class="hours-note">{t('hours_note', lang)}</div>
+  <p class="gbadge"><a href="{c.link('reviews.html')}">{stars(4, ' sm')} {t('rv_badge', lang, r=REVIEWS['rating'], n=REVIEWS['count'])}</a></p>
 </div></div>
 <section><div class="wrap">
   <h2>{t('h_cats', lang)}</h2>
@@ -525,6 +547,38 @@ def page_find(lang):
     desc = f'{t("moved_p", lang)}'
     return c, f'{t("h_find_page", lang)}{sep}租八借', desc, body, 'find'
 
+def page_reviews(lang):
+    c = Ctx(lang, 'reviews.html')
+    other = 'en' if lang == 'zh' else 'zh'
+    cards = []
+    for r in REVIEWS['reviews']:
+        text = esc(r[lang])
+        tags = []
+        if r['lang'] != lang:
+            tags.append(f'<span class="tag">{t("rv_translated", lang)}</span>')
+        if r.get('trimmed'):
+            tags.append(f'<span class="tag">{t("rv_trimmed", lang)}</span>')
+        cards.append(f'''<article class="rv">
+  <div class="rv-head">{stars(r['stars'])}<span class="when">{pick(r['when'], lang)}</span></div>
+  <p>{text}</p>
+  <div class="rv-foot"><b>{esc(r['name'])}</b><span class="via">Google</span>{''.join(tags)}</div>
+</article>''')
+    n = REVIEWS['count']; rating = REVIEWS['rating']
+    body = f'''<section><div class="wrap">
+  <h1>{t('h_reviews', lang)}</h1>
+  <div class="gsum">
+    <div class="gscore"><b>{rating}</b>{stars(4)}</div>
+    <div class="gmeta"><span class="glabel">{t('rv_google', lang)}</span><span>{t('rv_count', lang, n=n)}</span></div>
+    <a class="btn ghost" href="{REVIEWS['listing_url']}" rel="noopener">{t('rv_all', lang, n=n)}</a>
+  </div>
+  <p class="lead">{t('rv_lead', lang)}</p>
+  <div class="rv-grid">{''.join(cards)}</div>
+  <p class="source">{t('rv_source', lang)}</p>
+</div></section>'''
+    sep = '｜' if lang == 'zh' else ' | '
+    desc = (f'租八借 Google 評論 {rating} 分、{n} 則。' if lang == 'zh' else f'租八借 on Google: {rating} stars from {n} reviews. ') + t('rv_lead', lang)
+    return c, f'{t("h_reviews", lang)}{sep}租八借', desc, body, 'reviews'
+
 def page_404(lang):
     c = Ctx(lang, '404.html')
     body = f'''<section><div class="wrap">
@@ -557,11 +611,11 @@ img{max-width:100%}
 
 /* header */
 header{background:var(--green);color:var(--green-ink);position:sticky;top:0;z-index:20}
-header .wrap{display:flex;align-items:center;gap:1.5rem;min-height:64px}
+header .wrap{display:flex;align-items:center;gap:1rem;min-height:64px}
 .brand{font-family:"Noto Serif TC",serif;font-weight:700;font-size:1.45rem;letter-spacing:.08em;text-decoration:none;line-height:1.1}
-.brand small{display:block;font-family:"Noto Sans TC",sans-serif;font-weight:400;font-size:.62rem;letter-spacing:.16em;opacity:.75;margin-top:.15rem}
+.brand small{display:block;white-space:nowrap;font-family:"Noto Sans TC",sans-serif;font-weight:400;font-size:.62rem;letter-spacing:.16em;opacity:.75;margin-top:.15rem}
 nav.main{display:none;margin-left:auto;align-items:center;gap:.25rem}
-nav.main a{color:inherit;text-decoration:none;padding:.55rem .8rem;border-radius:3px;font-size:.95rem;display:inline-block}
+nav.main a{color:inherit;text-decoration:none;padding:.55rem .65rem;border-radius:3px;font-size:.92rem;display:inline-block;white-space:nowrap}
 nav.main a:hover,nav.main a[aria-current=page]{background:rgba(255,255,255,.12)}
 .dd{position:relative}
 .dd>a::after{content:"";display:inline-block;width:.4em;height:.4em;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:rotate(45deg);margin-left:.45em;position:relative;top:-.15em}
@@ -571,11 +625,12 @@ nav.main a:hover,nav.main a[aria-current=page]{background:rgba(255,255,255,.12)}
 .dd-menu a:hover,.dd-menu a[aria-current=page]{background:var(--soft)}
 .dd-menu a small{color:var(--mute);font-size:.8rem}
 .lang{display:flex;border:1px solid rgba(255,255,255,.45);border-radius:3px;overflow:hidden;margin-left:auto}
+.lang{flex-shrink:0}
 .lang a{color:inherit;text-decoration:none;padding:.35rem .7rem;font-size:.85rem;white-space:nowrap;line-height:1.4}
 .lang a[aria-current=true]{background:var(--green-ink);color:var(--green)}
-.callhead{display:none;text-decoration:none;font-weight:700;border:1px solid rgba(255,255,255,.45);border-radius:3px;padding:.35rem .8rem;font-size:.9rem}
+.callhead{display:none;white-space:nowrap;text-decoration:none;font-weight:700;border:1px solid rgba(255,255,255,.45);border-radius:3px;padding:.35rem .8rem;font-size:.9rem}
 @media (max-width:480px){.brand small{display:none}.brand{font-size:1.3rem}}
-@media (min-width:860px){nav.main{display:flex}.lang{margin-left:0}.callhead{display:inline-block}.menu{display:none}}
+@media (min-width:960px){nav.main{display:flex}.lang{margin-left:0}.callhead{display:inline-block}.menu{display:none}}
 
 /* mobile menu: <details>, no script needed */
 .menu{margin-left:.25rem}
@@ -648,6 +703,37 @@ section h1{font-size:2rem;margin-bottom:1.2rem}
 .contact .details{display:grid;gap:2rem}
 .contact h2{font-size:1.25rem;margin-bottom:.5rem}
 .contact .addr p{margin:.2rem 0}
+
+/* reviews (quoted from Google) */
+.stars{display:inline-flex;gap:1px;vertical-align:-2px}
+.stars svg{width:18px;height:18px;fill:#FABB05}
+.stars svg.off{fill:#D6DACB}
+.stars.sm svg{width:14px;height:14px}
+.gbadge{margin:1rem 0 0;font-size:.9rem}
+.gbadge a{text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:.5rem;background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.35rem .9rem .35rem .7rem}
+.gbadge a:hover{border-color:var(--blue)}
+.gsum{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.5rem;background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.gscore{display:flex;align-items:center;gap:.6rem}
+.gscore b{font-family:"Noto Serif TC",serif;font-size:2.2rem;line-height:1}
+.gscore .stars svg{width:22px;height:22px}
+.gmeta{display:grid;line-height:1.35}
+.glabel{font-weight:700}
+.gmeta span:last-child{color:var(--mute);font-size:.9rem}
+.gsum .btn{margin-left:auto}
+@media (max-width:600px){.gsum .btn{margin-left:0;width:100%;text-align:center}}
+.rv-grid{display:grid;gap:1rem;margin-top:2rem}
+@media (min-width:720px){.rv-grid{grid-template-columns:1fr 1fr;gap:1.25rem}}
+@media (min-width:1000px){.rv-grid{grid-template-columns:repeat(3,1fr)}}
+.rv{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.7rem}
+.rv-head{display:flex;justify-content:space-between;align-items:center}
+.rv .when{color:var(--mute);font-size:.82rem}
+.rv p{margin:0;font-size:.95rem;line-height:1.65;flex:1}
+.rv-foot{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;font-size:.85rem;padding-top:.6rem;border-top:1px solid var(--rule)}
+.rv-foot b{font-weight:500}
+.rv .via{color:var(--mute)}
+.rv .via::before{content:"·";margin-right:.5rem}
+.rv .tag{margin-left:auto;font-size:.72rem;color:var(--mute);border:1px solid var(--rule);border-radius:999px;padding:.1rem .5rem}
+.rv .tag+.tag{margin-left:0}
 
 /* find us */
 .moved-box{background:var(--paper);border-left:4px solid var(--blue);padding:1rem 1.2rem;margin-bottom:2rem;max-width:720px}
@@ -723,7 +809,7 @@ footer .note{opacity:.7;font-size:.75rem;grid-column:1/-1;margin-top:.5rem}
 footer .note a[aria-current=true]{font-weight:700;text-decoration:none}
 .callbar{position:sticky;bottom:0;background:var(--green);padding:.6rem 20px;border-top:1px solid rgba(255,255,255,.2);z-index:15}
 .callbar .call{display:block;text-align:center;background:var(--green-ink);color:var(--green);text-decoration:none;font-weight:700;padding:.75rem;border-radius:3px}
-@media (min-width:860px){.callbar{display:none}}
+@media (min-width:960px){.callbar{display:none}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 '''.lstrip()
 
@@ -748,6 +834,7 @@ def main():
         pages.append(page_policy(lang))
         pages.append(page_contact(lang))
         pages.append(page_find(lang))
+        pages.append(page_reviews(lang))
         pages.append(page_404(lang))
         for cat in CATS:
             pages.append(page_cat(lang, cat))

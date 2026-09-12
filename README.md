@@ -5,7 +5,7 @@ See CLAUDE.md for the brief and rules.
 ## What is where
 - `site/` — the finished static site. **This folder is what gets hosted.** 280 pages: 131 items × 2 languages, plus home, 5 category pages, policy, contact and 404 in each language. One CSS file, no JavaScript.
 - `build_site.py` — regenerates `site/` from `data/items.json` + `data/photomap.json`. Every UI string in it is a `(zh, en)` pair.
-- `data/` — source of truth for items and photo mapping.
+- `data/` — source of truth for items, photo mapping, and the curated Google reviews (`reviews.json`).
 - `prototype/` — the approved single-file prototype the site reproduces.
 - `docs/` — research notes 01–04.
 
