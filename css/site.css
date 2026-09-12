@@ -38,7 +38,7 @@ nav.main a:hover,nav.main a[aria-current=page]{background:rgba(255,255,255,.12)}
 .lang a[aria-current=true]{background:var(--green-ink);color:var(--green)}
 .callhead{display:none;white-space:nowrap;text-decoration:none;font-weight:700;border:1px solid rgba(255,255,255,.45);border-radius:3px;padding:.35rem .8rem;font-size:.9rem}
 @media (max-width:480px){.brand small{display:none}.brand{font-size:1.3rem}}
-@media (min-width:960px){nav.main{display:flex}.lang{margin-left:0}.callhead{display:inline-block}.menu{display:none}}
+@media (min-width:860px){nav.main{display:flex}.lang{margin-left:0}.callhead{display:inline-block}.menu{display:none}}
 
 /* mobile menu: <details>, no script needed */
 .menu{margin-left:.25rem}
@@ -117,31 +117,42 @@ section h1{font-size:2rem;margin-bottom:1.2rem}
 .stars svg{width:18px;height:18px;fill:#FABB05}
 .stars svg.off{fill:#D6DACB}
 .stars.sm svg{width:14px;height:14px}
+.gword{font-family:"Product Sans",Arial,sans-serif;font-weight:700;letter-spacing:-.02em}
+.gword span:nth-child(1){color:#4285F4}.gword span:nth-child(2){color:#EA4335}.gword span:nth-child(3){color:#FBBC05}.gword span:nth-child(4){color:#4285F4}.gword span:nth-child(5){color:#34A853}.gword span:nth-child(6){color:#EA4335}
 .gbadge{margin:1rem 0 0;font-size:.9rem}
 .gbadge a{text-decoration:none;color:var(--ink);display:inline-flex;align-items:center;gap:.5rem;background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:.35rem .9rem .35rem .7rem}
 .gbadge a:hover{border-color:var(--blue)}
-.gsum{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.5rem;background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.5rem}
-.gscore{display:flex;align-items:center;gap:.6rem}
-.gscore b{font-family:"Noto Serif TC",serif;font-size:2.2rem;line-height:1}
-.gscore .stars svg{width:22px;height:22px}
-.gmeta{display:grid;line-height:1.35}
-.glabel{font-weight:700}
-.gmeta span:last-child{color:var(--mute);font-size:.9rem}
-.gsum .btn{margin-left:auto}
-@media (max-width:600px){.gsum .btn{margin-left:0;width:100%;text-align:center}}
-.rv-grid{display:grid;gap:1rem;margin-top:2rem}
+.reviews{padding-top:0}
+.rv-top{display:grid;gap:1rem}
+@media (min-width:720px){.rv-top{grid-template-columns:1fr 1.4fr;gap:1.25rem}}
+.rv-score,.rv-digest,.rv{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.4rem 1.3rem}
+.rv-score{text-align:center;display:grid;justify-items:center;gap:.35rem}
+.rv-score b{font-family:"Noto Serif TC",serif;font-size:3.2rem;line-height:1;letter-spacing:-.02em}
+.rv-score .stars svg{width:24px;height:24px}
+.rv-score p{margin:0 0 .6rem;color:var(--mute);font-size:.95rem}
+.rv-score .btn{border-radius:999px;padding:.7rem 1.4rem}
+.rv-score .all{font-size:.85rem;color:var(--blue);text-decoration:none;margin-top:.2rem}
+.rv-score .all:hover{text-decoration:underline}
+.rv-digest h3{font-size:1.1rem;font-family:"Noto Sans TC",sans-serif;font-weight:700;color:var(--blue)}
+.rv-digest small{display:block;color:var(--mute);font-size:.82rem;margin:.1rem 0 .6rem}
+.rv-digest ul{list-style:none;margin:.8rem 0 0;padding:0;display:grid;gap:.6rem}
+.rv-digest li{padding-left:1.6rem;position:relative;line-height:1.5}
+.rv-digest li::before{content:"";position:absolute;left:.15rem;top:.45em;width:.45rem;height:.75rem;border:solid var(--green);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.rv-grid{display:grid;gap:1rem;margin-top:1rem}
 @media (min-width:720px){.rv-grid{grid-template-columns:1fr 1fr;gap:1.25rem}}
 @media (min-width:1000px){.rv-grid{grid-template-columns:repeat(3,1fr)}}
-.rv{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:1.1rem 1.2rem;display:flex;flex-direction:column;gap:.7rem}
-.rv-head{display:flex;justify-content:space-between;align-items:center}
-.rv .when{color:var(--mute);font-size:.82rem}
-.rv p{margin:0;font-size:.95rem;line-height:1.65;flex:1}
-.rv-foot{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;font-size:.85rem;padding-top:.6rem;border-top:1px solid var(--rule)}
-.rv-foot b{font-weight:500}
-.rv .via{color:var(--mute)}
-.rv .via::before{content:"·";margin-right:.5rem}
-.rv .tag{margin-left:auto;font-size:.72rem;color:var(--mute);border:1px solid var(--rule);border-radius:999px;padding:.1rem .5rem}
-.rv .tag+.tag{margin-left:0}
+.rv{display:flex;flex-direction:column;gap:.6rem;align-items:flex-start}
+.rv-who{display:flex;align-items:center;gap:.75rem;width:100%}
+.rv-who b{display:block;font-weight:700;line-height:1.25}
+.rv-who .when{display:block;color:var(--mute);font-size:.82rem}
+.avatar{position:relative;flex:none;width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--green-ink);display:grid;place-items:center;font-weight:700;font-size:1.2rem;font-family:"Noto Sans TC",sans-serif}
+.avatar .g{position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;background:#fff;color:#4285F4;font:700 11px/18px "Product Sans",Arial,sans-serif;font-style:normal;text-align:center;box-shadow:0 0 0 2px #fff}
+.rv .tag{margin-left:auto;align-self:flex-start;font-size:.7rem;color:var(--mute);border:1px solid var(--rule);border-radius:999px;padding:.1rem .5rem;white-space:nowrap}
+.rv p{margin:0;font-size:.95rem;line-height:1.65}
+.more{display:inline}
+.more summary{display:inline;color:var(--blue);cursor:pointer;list-style:none;font-size:.9rem}
+.more summary::-webkit-details-marker{display:none}
+.more[open] summary{display:none}
 
 /* find us */
 .moved-box{background:var(--paper);border-left:4px solid var(--blue);padding:1rem 1.2rem;margin-bottom:2rem;max-width:720px}
@@ -217,5 +228,5 @@ footer .note{opacity:.7;font-size:.75rem;grid-column:1/-1;margin-top:.5rem}
 footer .note a[aria-current=true]{font-weight:700;text-decoration:none}
 .callbar{position:sticky;bottom:0;background:var(--green);padding:.6rem 20px;border-top:1px solid rgba(255,255,255,.2);z-index:15}
 .callbar .call{display:block;text-align:center;background:var(--green-ink);color:var(--green);text-decoration:none;font-weight:700;padding:.75rem;border-radius:3px}
-@media (min-width:960px){.callbar{display:none}}
+@media (min-width:860px){.callbar{display:none}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
