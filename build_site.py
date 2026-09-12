@@ -19,7 +19,7 @@ PHOTOS_SRC = ROOT / 'prototype' / 'photos'
 
 # Set this once the site has a domain (no trailing slash). Enables absolute
 # hreflang alternates and sitemap.xml. Leave empty until then.
-BASE_URL = ''
+BASE_URL = 'https://jaydenwang127-stack.github.io/zubajie'
 
 TEL = '02-2823-0080'
 TEL_HREF = 'tel:+886228230080'

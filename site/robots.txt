@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://jaydenwang127-stack.github.io/zubajie/sitemap.xml
