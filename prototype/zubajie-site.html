@@ -1,0 +1,344 @@
+<title>租八借</title>
+<meta name="description" content="租八借 website rebuild prototype: home, rental catalog by category, policy and contact, in Chinese and English.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#F1F2EA;--paper:#FFFFFF;--ink:#1B241E;--mute:#5C6B60;--green:#1E3A2B;--green-ink:#EEF0E6;--blue:#2F6F8F;--rule:#D6DACB;--soft:#E4E7DA;--warn:#8A4B12;--maxw:1080px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+body.en .zh{display:none} body:not(.en) .en{display:none} .zh,.en{display:inline}
+h1,h2,h3{font-family:"Noto Serif TC",Georgia,serif;margin:0;text-wrap:balance;font-weight:700}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:20px}
+@media (min-width:720px){.wrap{padding-inline:32px}}
+.ribbon{background:#111;color:#fff;font-size:.72rem;text-align:center;padding:.3rem;letter-spacing:.08em}
+
+/* header */
+header{background:var(--green);color:var(--green-ink);position:sticky;top:0;z-index:20}
+header .wrap{display:flex;align-items:center;gap:1.5rem;min-height:64px}
+.brand{font-family:"Noto Serif TC",serif;font-weight:700;font-size:1.45rem;letter-spacing:.08em;text-decoration:none;line-height:1.1}
+.brand small{display:block;font-family:"Noto Sans TC";font-weight:400;font-size:.62rem;letter-spacing:.16em;opacity:.75;margin-top:.15rem}
+nav.main{display:none;margin-left:auto;align-items:center;gap:.25rem}
+nav.main a,nav.main button{color:inherit;text-decoration:none;background:none;border:0;padding:.55rem .8rem;border-radius:3px;font-size:.95rem}
+nav.main a:hover,nav.main button:hover,nav.main a[aria-current=page]{background:rgba(255,255,255,.12)}
+.dd{position:relative}
+.dd button::after{content:"";display:inline-block;width:.4em;height:.4em;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:rotate(45deg);margin-left:.45em;position:relative;top:-.15em}
+.dd-menu{position:absolute;top:100%;left:0;background:var(--paper);color:var(--ink);min-width:200px;border-radius:4px;box-shadow:0 10px 30px rgba(27,36,30,.18);padding:.4rem;display:none;flex-direction:column;margin-top:.3rem}
+.dd.open .dd-menu,.dd:hover .dd-menu,.dd:focus-within .dd-menu{display:flex}
+.dd-menu a{padding:.55rem .8rem;border-radius:3px;text-decoration:none;display:flex;justify-content:space-between;gap:1rem}
+.dd-menu a:hover{background:var(--soft)}
+.dd-menu a small{color:var(--mute);font-size:.8rem}
+.lang{display:flex;border:1px solid rgba(255,255,255,.45);border-radius:3px;overflow:hidden;margin-left:auto}
+.lang button{background:none;border:0;color:inherit;padding:.35rem .7rem;font-size:.85rem;white-space:nowrap}
+@media (max-width:480px){.brand small{display:none}.brand{font-size:1.3rem}}
+.lang button[aria-pressed=true]{background:var(--green-ink);color:var(--green)}
+.callhead{display:none;text-decoration:none;font-weight:700;border:1px solid rgba(255,255,255,.45);border-radius:3px;padding:.35rem .8rem;font-size:.9rem}
+.burger{background:none;border:0;color:inherit;padding:.4rem;display:grid;gap:5px;margin-left:.25rem}
+.burger span{display:block;width:22px;height:2px;background:currentColor}
+@media (min-width:860px){nav.main{display:flex}.lang{margin-left:0}.callhead{display:inline-block}.burger{display:none}}
+.drawer{display:none;background:var(--green);color:var(--green-ink);border-top:1px solid rgba(255,255,255,.15)}
+.drawer.open{display:block}
+.drawer a{display:block;padding:.8rem 20px;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.1)}
+.drawer .sub a{padding-left:2.4rem;font-size:.95rem;opacity:.9}
+.drawer .grp{padding:.8rem 20px .3rem;font-size:.72rem;letter-spacing:.14em;opacity:.7}
+
+/* pages */
+main{min-height:60vh}
+.page{display:none}.page.active{display:block}
+section{padding-block:3rem}
+@media (min-width:720px){section{padding-block:4rem}}
+.eyebrow{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);font-weight:500;margin-bottom:.6rem}
+h2{font-size:1.65rem;margin-bottom:1.2rem}
+.lead{max-width:44ch;color:var(--mute);margin:0}
+
+/* home */
+.hero{padding-block:2.5rem 3rem}
+.hero .wrap{display:grid;gap:2rem}
+@media (min-width:860px){.hero .wrap{grid-template-columns:1.05fr 1fr;align-items:center;gap:3.5rem}.hero{padding-block:4rem}}
+.hero h1{font-size:2rem;line-height:1.25}
+@media (min-width:720px){.hero h1{font-size:2.6rem}}
+.hero p{max-width:40ch;margin:1rem 0 0;color:var(--mute);font-size:1.05rem}
+.hero-cta{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.6rem}
+.btn{display:inline-block;text-decoration:none;padding:.8rem 1.3rem;border-radius:3px;font-weight:700;border:1px solid var(--green);background:var(--green);color:var(--green-ink)}
+.btn.ghost{background:transparent;color:var(--green)}
+.hours-note{margin-top:1.4rem;display:inline-flex;gap:.6rem;align-items:center;background:var(--soft);padding:.5rem .8rem;border-left:4px solid var(--blue);font-size:.92rem}
+.mosaic{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:180px 140px;gap:8px}
+@media (min-width:720px){.mosaic{grid-template-rows:240px 190px}}
+.mosaic img{width:100%;height:100%;object-fit:cover;display:block;border-radius:3px}
+.mosaic .m1{grid-column:1/3}
+.cats{display:grid;gap:1rem;grid-template-columns:1fr 1fr}
+@media (min-width:720px){.cats{grid-template-columns:repeat(3,1fr);gap:1.25rem}}
+@media (min-width:1000px){.cats{grid-template-columns:repeat(5,1fr)}}
+.cat{background:var(--paper);border:1px solid var(--rule);border-radius:4px;overflow:hidden;text-decoration:none;display:block}
+.cat .im{aspect-ratio:4/3;background:#fff;display:grid;place-items:center;overflow:hidden}
+.cat img{width:100%;height:100%;object-fit:cover;display:block}
+.cat .t{padding:.8rem .9rem 1rem}
+.cat h3{font-size:1.1rem}
+.cat small{display:block;color:var(--mute);font-size:.8rem;margin-top:.15rem}
+.steps{display:grid;gap:1.5rem}
+@media (min-width:720px){.steps{grid-template-columns:repeat(3,1fr);gap:2rem}}
+.step h3{font-size:1.1rem;margin-bottom:.35rem}
+.step p{margin:0;color:var(--mute);font-size:.95rem}
+.step .n{font-family:"Noto Serif TC",serif;color:var(--blue);font-size:1.6rem;line-height:1;margin-bottom:.6rem}
+.band{background:var(--green);color:var(--green-ink)}
+.band .eyebrow{color:#9CC3D5}
+.band h2{color:#fff}
+.band .step p{color:rgba(238,240,230,.8)}
+.info{display:grid;gap:2rem}
+@media (min-width:720px){.info{grid-template-columns:1fr 1fr;gap:3rem}}
+.hours{margin:0;display:grid;gap:.3rem;max-width:380px}
+.hours div{display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.18)}
+.hours dt{font-weight:500}.hours dd{margin:0;font-variant-numeric:tabular-nums}
+.page-contact .hours div,#page-home .info .hours div{border-bottom-color:var(--rule)}
+.band a{color:#fff}
+.addr p{margin:.2rem 0}
+
+/* catalog */
+.cat-head{padding-block:2.5rem 1.5rem}
+.cat-head h1{font-size:2rem}
+.cat-head p{color:var(--mute);margin:.5rem 0 0;max-width:48ch}
+.subnav{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:1.4rem}
+.subnav a{text-decoration:none;font-size:.9rem;padding:.4rem .85rem;border:1px solid var(--rule);border-radius:999px;background:var(--paper)}
+.subnav a[aria-current=page]{background:var(--green);color:var(--green-ink);border-color:var(--green)}
+.grid{display:grid;gap:1.25rem;grid-template-columns:1fr 1fr;padding-bottom:3rem}
+@media (min-width:720px){.grid{grid-template-columns:repeat(3,1fr);gap:1.5rem}}
+@media (min-width:1000px){.grid{grid-template-columns:repeat(4,1fr);gap:1.75rem}}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:4px;text-decoration:none;display:flex;flex-direction:column;overflow:hidden}
+.card:hover{border-color:var(--blue)}
+.card .im{aspect-ratio:1;background:#fff;display:grid;place-items:center;padding:8%;border-bottom:1px solid var(--rule)}
+.card img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.card .ph{color:var(--mute);font-size:.75rem;text-align:center}
+.card .t{padding:.9rem .9rem 1rem;display:grid;gap:.25rem}
+.card h3{font-size:1rem;font-family:"Noto Sans TC";font-weight:700;line-height:1.35}
+.card .spec{color:var(--mute);font-size:.8rem;line-height:1.4;min-height:1.1em}
+.card .price{margin-top:.5rem;font-size:.85rem;color:var(--mute)}
+.card .price b{color:var(--ink);font-size:1.05rem;font-variant-numeric:tabular-nums}
+
+/* product */
+.prod{padding-block:2rem 4rem;display:grid;gap:2rem}
+@media (min-width:860px){.prod{grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;padding-block:3rem 5rem}}
+.crumbs{font-size:.85rem;color:var(--mute);padding-top:1.5rem}
+.crumbs a{color:var(--mute);text-decoration:none}
+.crumbs a:hover{text-decoration:underline}
+.prod .im{background:var(--paper);border:1px solid var(--rule);border-radius:4px;aspect-ratio:1;display:grid;place-items:center;padding:8%}
+.prod .im img{max-width:100%;max-height:100%;object-fit:contain}
+.prod h1{font-size:1.8rem;line-height:1.25}
+.prod .spec{color:var(--mute);margin:.6rem 0 0;font-size:1rem}
+.prod .cat-tag{display:inline-block;font-size:.75rem;letter-spacing:.12em;color:var(--blue);margin-bottom:.6rem}
+.rates{margin-top:1.8rem;border-top:2px solid var(--green)}
+.rates div{display:flex;justify-content:space-between;align-items:baseline;padding:.7rem 0;border-bottom:1px solid var(--rule)}
+.rates dt{font-weight:500}.rates dd{margin:0;font-variant-numeric:tabular-nums;font-size:1.1rem}
+.rates dt small{display:block;font-weight:400;color:var(--mute);font-size:.78rem}
+.rates .buy dd{color:var(--mute);font-size:1rem}
+.flag{margin-top:1rem;font-size:.85rem;color:var(--warn);background:#F6EBDD;padding:.6rem .8rem;border-radius:3px}
+.prod .btn{margin-top:1.6rem}
+.also{padding-top:.5rem}
+
+/* policy */
+.policy-list{display:grid;gap:1rem;max-width:720px}
+@media (min-width:720px){.policy-list{grid-template-columns:1fr 1fr;gap:1.25rem}}
+.policy-list div{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:1.1rem 1.2rem}
+.policy-list h3{font-size:1.05rem;margin-bottom:.3rem}
+.policy-list p{margin:0;color:var(--mute);font-size:.9rem}
+
+footer{background:var(--green);color:var(--green-ink);padding-block:2.5rem;font-size:.9rem}
+footer .wrap{display:grid;gap:1.5rem}
+@media (min-width:720px){footer .wrap{grid-template-columns:1fr 1fr 1fr}}
+footer p{margin:.2rem 0}footer a{color:#fff}
+footer .fh{font-family:"Noto Serif TC",serif;font-size:1.05rem;margin-bottom:.4rem}
+footer .note{opacity:.6;font-size:.75rem;grid-column:1/-1;margin-top:.5rem}
+.callbar{position:sticky;bottom:0;background:var(--green);padding:.6rem 20px;border-top:1px solid rgba(255,255,255,.2);z-index:15}
+.callbar .call{display:block;text-align:center;background:var(--green-ink);color:var(--green);text-decoration:none;font-weight:700;padding:.75rem;border-radius:3px}
+@media (min-width:860px){.callbar{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="ribbon">網站重建示意 · 方向 A ｜ Rebuild prototype · Direction A</div>
+<header>
+  <div class="wrap">
+    <a class="brand" href="#/">租八借<small><span class="zh">北投 · 戶外裝備出租</span><span class="en">BEITOU · OUTDOOR GEAR RENTAL</span></small></a>
+    <nav class="main" aria-label="Main">
+      <a href="#/" data-nav="home"><span class="zh">首頁</span><span class="en">Home</span></a>
+      <div class="dd" id="dd">
+        <button type="button" id="dd-btn" aria-haspopup="true" aria-expanded="false"><span class="zh">租借裝備</span><span class="en">Rent gear</span></button>
+        <div class="dd-menu" id="dd-menu"><a href="#/rent/camping"><span class="zh">露營裝備</span><span class="en">Camping</span><small>49</small></a><a href="#/rent/mountain"><span class="zh">登山裝備</span><span class="en">Mountain</span><small>44</small></a><a href="#/rent/river"><span class="zh">溯溪裝備</span><span class="en">River tracing</span><small>16</small></a><a href="#/rent/water"><span class="zh">水上裝備</span><span class="en">Water</span><small>9</small></a><a href="#/rent/other"><span class="zh">其他裝備</span><span class="en">Other</span><small>13</small></a></div>
+      </div>
+      <a href="#/policy" data-nav="policy"><span class="zh">租借規則</span><span class="en">Rental policy</span></a>
+      <a href="#/contact" data-nav="contact"><span class="zh">聯絡我們</span><span class="en">Contact</span></a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language 語言"><button type="button" id="lang-zh" data-lang="zh" aria-pressed="true">中文</button><button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button></div>
+    <a class="callhead" href="tel:+886228230080">02-2823-0080</a>
+    <button type="button" class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <div class="drawer" id="drawer">
+    <a href="#/"><span class="zh">首頁</span><span class="en">Home</span></a>
+    <div class="grp"><span class="zh">租借裝備</span><span class="en">Rent gear</span></div>
+    <div class="sub"><a href="#/rent/camping"><span class="zh">露營裝備</span><span class="en">Camping</span></a><a href="#/rent/mountain"><span class="zh">登山裝備</span><span class="en">Mountain</span></a><a href="#/rent/river"><span class="zh">溯溪裝備</span><span class="en">River tracing</span></a><a href="#/rent/water"><span class="zh">水上裝備</span><span class="en">Water</span></a><a href="#/rent/other"><span class="zh">其他裝備</span><span class="en">Other</span></a></div>
+    <a href="#/policy"><span class="zh">租借規則</span><span class="en">Rental policy</span></a>
+    <a href="#/contact"><span class="zh">聯絡我們</span><span class="en">Contact</span></a>
+  </div>
+</header>
+
+<main>
+<!-- HOME -->
+<div class="page" id="page-home">
+  <div class="hero"><div class="wrap">
+    <div>
+      <h1><span class="zh">北投戶外裝備出租</span><span class="en">Outdoor gear rental in Beitou</span></h1>
+      <p><span class="zh">露營、登山、溯溪、水上裝備。電話預約，到店取還。</span><span class="en">Camping, hiking, river-tracing and water gear. Book by phone, pick up in store.</span></p>
+      <div class="hero-cta"><a class="btn" href="#/rent/camping"><span class="zh">裝備與價格</span><span class="en">Gear and prices</span></a><a class="btn ghost" href="tel:+886228230080"><span class="zh">撥打 02-2823-0080</span><span class="en">Call 02-2823-0080</span></a></div>
+      <div class="hours-note"><span class="zh">週三、週日公休 · 週六 15:00 打烊</span><span class="en">Closed Wed & Sun · Saturday closes 15:00</span></div>
+    </div>
+    <div class="mosaic">
+      <img class="m1" src="photos/big74.jpg" alt="">
+      <img src="photos/big17.jpg" alt="">
+      <img src="photos/big16.jpg" alt="">
+    </div>
+  </div></div>
+  <section><div class="wrap">
+        <h2><span class="zh">租借裝備</span><span class="en">Rent gear</span></h2>
+    <div class="cats"><a class="cat" href="#/rent/camping"><div class="im"><img src="photos/big74.jpg" alt=""></div><div class="t"><h3><span class="zh">露營裝備</span><span class="en">Camping</span></h3><small><span class="zh">49 項</span><span class="en">49 items</span></small></div></a><a class="cat" href="#/rent/mountain"><div class="im"><img src="photos/big83.jpg" alt=""></div><div class="t"><h3><span class="zh">登山裝備</span><span class="en">Mountain</span></h3><small><span class="zh">44 項</span><span class="en">44 items</span></small></div></a><a class="cat" href="#/rent/river"><div class="im"><img src="photos/big17.jpg" alt=""></div><div class="t"><h3><span class="zh">溯溪裝備</span><span class="en">River tracing</span></h3><small><span class="zh">16 項</span><span class="en">16 items</span></small></div></a><a class="cat" href="#/rent/water"><div class="im"><img src="photos/big16.jpg" alt=""></div><div class="t"><h3><span class="zh">水上裝備</span><span class="en">Water</span></h3><small><span class="zh">9 項</span><span class="en">9 items</span></small></div></a><a class="cat" href="#/rent/other"><div class="im"><img src="photos/p56.jpg" alt=""></div><div class="t"><h3><span class="zh">其他裝備</span><span class="en">Other</span></h3><small><span class="zh">13 項</span><span class="en">13 items</span></small></div></a></div>
+  </div></section>
+  <section class="band"><div class="wrap">
+        <h2><span class="zh">如何租借</span><span class="en">How to rent</span></h2>
+    <div class="steps"><div class="step"><div class="n">一</div><h3><span class="zh">打電話預約</span><span class="en">Call to reserve</span></h3><p><span class="zh">告訴我們日期和需要的裝備，我們幫你留。</span><span class="en">Tell us the dates and what you need; we hold it for you.</span></p></div><div class="step"><div class="n">二</div><h3><span class="zh">到店取件</span><span class="en">Pick up in store</span></h3><p><span class="zh">捷運唭哩岸站步行 4 分鐘。鞋子、防寒衣可現場試穿。</span><span class="en">4 minutes on foot from MRT Qilian. Try on shoes and wetsuits in the shop.</span></p></div><div class="step"><div class="n">三</div><h3><span class="zh">歸還</span><span class="en">Return</span></h3><p><span class="zh">營業時間內送回店裡。</span><span class="en">Return to the shop during opening hours.</span></p></div></div>
+  </div></section>
+  <section><div class="wrap info">
+    <div>
+            <h2><span class="zh">營業時間</span><span class="en">Opening hours</span></h2>
+      <dl class="hours"><div><dt><span class="zh">週一、二、四、五</span><span class="en">Mon, Tue, Thu, Fri</span></dt><dd>10:00–20:00</dd></div><div><dt><span class="zh">週六</span><span class="en">Saturday</span></dt><dd>10:00–15:00</dd></div><div><dt><span class="zh">國定假日</span><span class="en">Public holidays</span></dt><dd>10:00–19:00</dd></div><div><dt><span class="zh">週三、週日</span><span class="en">Wednesday & Sunday</span></dt><dd><span class="zh">公休</span><span class="en">Closed</span></dd></div></dl>
+    </div>
+    <div class="addr">
+            <h2><span class="zh">店面位置</span><span class="en">Location</span></h2>
+      <p><span class="zh">台北市北投區東華街二段210號</span><span class="en">No. 210, Sec. 2, Donghua St, Beitou District, Taipei</span></p>
+      <p><span class="zh">捷運淡水信義線 唭哩岸站，步行約 4 分鐘</span><span class="en">MRT Red Line, Qilian station, about 4 minutes on foot</span></p>
+      <p style="margin-top:1rem"><a class="btn ghost" href="#/contact"><span class="zh">聯絡與交通</span><span class="en">Contact and directions</span></a></p>
+    </div>
+  </div></section>
+</div>
+
+<!-- CATALOG -->
+<div class="page" id="page-cat">
+  <div class="wrap">
+    <div class="cat-head">
+            <h1 id="cat-title"></h1>
+      <p id="cat-desc"></p>
+      <div class="subnav" id="subnav"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<!-- PRODUCT -->
+<div class="page" id="page-prod">
+  <div class="wrap">
+    <div class="crumbs" id="crumbs"></div>
+    <div class="prod" id="prod"></div>
+  </div>
+</div>
+
+<!-- POLICY -->
+<div class="page" id="page-policy">
+  <section><div class="wrap">
+        <h2><span class="zh">租借規則</span><span class="en">Rental policy</span></h2>
+    <p class="lead" style="margin-bottom:2rem"><span class="zh">租借前先知道的事。每一項的內容都要和老闆確認後才會放上來。</span><span class="en">What to know before you rent. Each item below is written once confirmed with the owner.</span></p>
+    <div class="policy-list"><div><h3><span class="zh">押金</span><span class="en">Deposit</span></h3><p><span class="zh">內容待與老闆確認。</span><span class="en">To be confirmed with the owner.</span></p></div><div><h3><span class="zh">證件</span><span class="en">ID</span></h3><p><span class="zh">內容待與老闆確認。</span><span class="en">To be confirmed with the owner.</span></p></div><div><h3><span class="zh">歸還時間</span><span class="en">Return time</span></h3><p><span class="zh">內容待與老闆確認。</span><span class="en">To be confirmed with the owner.</span></p></div><div><h3><span class="zh">損壞與遺失</span><span class="en">Damage and loss</span></h3><p><span class="zh">內容待與老闆確認。</span><span class="en">To be confirmed with the owner.</span></p></div><div><h3><span class="zh">清潔</span><span class="en">Cleaning</span></h3><p><span class="zh">內容待與老闆確認。</span><span class="en">To be confirmed with the owner.</span></p></div><div><h3><span class="zh">逾期</span><span class="en">Late return</span></h3><p><span class="zh">內容待與老闆確認。</span><span class="en">To be confirmed with the owner.</span></p></div></div>
+  </div></section>
+</div>
+
+<!-- CONTACT -->
+<div class="page page-contact" id="page-contact">
+  <section><div class="wrap info">
+    <div>
+            <h2><span class="zh">聯絡我們</span><span class="en">Contact</span></h2>
+      <div class="addr">
+        <p><strong>租八借</strong></p>
+        <p><span class="zh">台北市北投區東華街二段210號</span><span class="en">No. 210, Sec. 2, Donghua St, Beitou District, Taipei</span></p>
+        <p><span class="zh">捷運淡水信義線 唭哩岸站，步行約 4 分鐘</span><span class="en">MRT Red Line, Qilian station, about 4 minutes on foot</span></p>
+        <p style="margin-top:1rem"><span class="zh">電話</span><span class="en">Tel</span> <a href="tel:+886228230080">02-2823-0080</a></p>
+        <p><span class="zh">傳真</span><span class="en">Fax</span> 02-2821-0278</p>
+        <p>Email <a href="mailto:suntreeyang@gmail.com">suntreeyang@gmail.com</a></p>
+      </div>
+    </div>
+    <div>
+            <h2><span class="zh">營業時間</span><span class="en">Opening hours</span></h2>
+      <dl class="hours"><div><dt><span class="zh">週一、二、四、五</span><span class="en">Mon, Tue, Thu, Fri</span></dt><dd>10:00–20:00</dd></div><div><dt><span class="zh">週六</span><span class="en">Saturday</span></dt><dd>10:00–15:00</dd></div><div><dt><span class="zh">國定假日</span><span class="en">Public holidays</span></dt><dd>10:00–19:00</dd></div><div><dt><span class="zh">週三、週日</span><span class="en">Wednesday & Sunday</span></dt><dd><span class="zh">公休</span><span class="en">Closed</span></dd></div></dl>
+    </div>
+  </div></section>
+</div>
+</main>
+
+<footer><div class="wrap">
+  <div><div class="fh">租八借</div><p><span class="zh">台北市北投區東華街二段210號</span><span class="en">No. 210, Sec. 2, Donghua St, Beitou District, Taipei</span></p><p><span class="zh">捷運淡水信義線 唭哩岸站，步行約 4 分鐘</span><span class="en">MRT Red Line, Qilian station, about 4 minutes on foot</span></p></div>
+  <div><div class="fh"><span class="zh">聯絡我們</span><span class="en">Contact</span></div><p><a href="tel:+886228230080">02-2823-0080</a></p><p><a href="mailto:suntreeyang@gmail.com">suntreeyang@gmail.com</a></p></div>
+  <div><div class="fh"><span class="zh">營業時間</span><span class="en">Opening hours</span></div><p><span class="zh">週一、二、四、五 10:00–20:00 · 週六 10:00–15:00</span><span class="en">Mon Tue Thu Fri 10:00–20:00 · Sat 10:00–15:00</span></p><p><span class="zh">國定假日 10:00–19:00 · 週三、週日公休</span><span class="en">Holidays 10:00–19:00 · Closed Wed & Sun</span></p></div>
+  <p class="note"><span class="zh">網站重建示意頁，非正式網站。價格逐字取自舊站 dbk.url.tw，尚未經老闆確認。</span><span class="en">Rebuild prototype, not the live site. Prices copied verbatim from the old site dbk.url.tw and not yet confirmed by the owner.</span></p>
+</div></footer>
+<div class="callbar"><a class="call" href="tel:+886228230080"><span class="zh">撥打 02-2823-0080</span><span class="en">Call 02-2823-0080</span></a></div>
+
+<script>
+const ITEMS = [{"id": "CA-001", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "八人帳蓬+鋁墊", "spec": "300*300*185cm 淨重:7.5kg (嘉隆蒙古包台製)", "en": "8-person dome tent + foil groundsheet", "specen": "300×300×185 cm, 7.5 kg, Jialong (Taiwan-made)", "sale": 4500, "d2": 600, "add": 100, "d5": 1000, "mo": 2000, "conf": "", "photo": "p02"}, {"id": "CA-002", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "六人帳蓬+鋁墊", "spec": "250*250*180cm 淨重:6.5kg (嘉隆蒙古包台製)", "en": "6-person dome tent + foil groundsheet", "specen": "250×250×180 cm, 6.5 kg, Jialong (Taiwan-made)", "sale": 3600, "d2": 500, "add": 100, "d5": 900, "mo": 1800, "conf": "", "photo": "p02"}, {"id": "CA-003", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "四人帳蓬+鋁墊", "spec": "200*200*165cm 淨重:4.5kg (嘉隆蒙古包台製)", "en": "4-person dome tent + foil groundsheet", "specen": "200×200×165 cm, 4.5 kg, Jialong (Taiwan-made)", "sale": 3200, "d2": 400, "add": 100, "d5": 850, "mo": 1700, "conf": "五至十天 5–10 d: 露營裝備 Camping 850 vs 登山裝備 Mountain 800;月租 Monthly: 露營裝備 Camping 1700 vs 登山裝備 Mountain 1600;", "photo": "p02"}, {"id": "CA-004", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "二人帳蓬+鋁墊", "spec": "200*120*135cm 淨重:3kg", "en": "2-person dome tent + foil groundsheet", "specen": "200×120×135 cm, 3 kg", "sale": 2500, "d2": 300, "add": 100, "d5": 700, "mo": 1400, "conf": "", "photo": "p02"}, {"id": "CA-005", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "客廳帳", "spec": "300*300*350cm", "en": "Shelter / living tent", "specen": "300×300×350 cm", "sale": 5000, "d2": 700, "add": 100, "d5": 1100, "mo": 2200, "conf": "", "photo": "p24"}, {"id": "CA-006", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "方形天幕帳", "spec": "500*300*280cm", "en": "Rectangular tarp shelter", "specen": "500×300×280 cm", "sale": 3000, "d2": 400, "add": 100, "d5": 800, "mo": 1600, "conf": "", "photo": "p41"}, {"id": "CA-007", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "天幕固定營釘", "spec": "50cm", "en": "Tarp stake", "specen": "50 cm", "sale": 600, "d2": 50, "add": 20, "d5": 130, "mo": 260, "conf": "", "photo": "p47"}, {"id": "CA-008", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "天幕加長營柱", "spec": "33mm<>280cm", "en": "Tarp extension pole", "specen": "33 mm, up to 280 cm", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p71"}, {"id": "CA-009", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "魚骨釘", "spec": "7cm", "en": "Tent stake (fishbone type)", "specen": "7 cm", "sale": 50, "d2": 10, "add": 5, "d5": 30, "mo": 60, "conf": "", "photo": "p89"}, {"id": "CA-010", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "鋪棉睡袋(乾洗)", "spec": "1.6kg (100%純棉台灣製)", "en": "Cotton sleeping bag (dry-clean)", "specen": "1.6 kg, 100% cotton, Taiwan-made", "sale": 800, "d2": 60, "add": 30, "d5": 180, "mo": 360, "conf": "", "photo": "p08"}, {"id": "CA-011", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "鋪棉睡袋(水洗)", "spec": "1.6kg (100%純棉台灣製)", "en": "Cotton sleeping bag (washable)", "specen": "1.6 kg, 100% cotton, Taiwan-made", "sale": 800, "d2": 120, "add": 30, "d5": 240, "mo": 480, "conf": "", "photo": "p08"}, {"id": "CA-012", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "羽絨睡袋", "spec": "1.6kg -5~-10度", "en": "Down sleeping bag", "specen": "1.6 kg, rated -5 to -10 °C", "sale": 4200, "d2": 200, "add": 60, "d5": 440, "mo": 800, "conf": "月租 Monthly: 露營裝備 Camping 800 vs 登山裝備 Mountain 880;", "photo": "p09"}, {"id": "CA-013", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "羽絨睡袋二", "spec": "1.2kg -5~-10度", "en": "Down sleeping bag (type 2)", "specen": "1.2 kg, rated -5 to -10 °C", "sale": 4800, "d2": 200, "add": 60, "d5": 440, "mo": 880, "conf": "", "photo": "p21"}, {"id": "CA-014", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "充氣式睡墊", "spec": "190*60*5cm", "en": "Inflatable sleeping pad", "specen": "190×60×5 cm", "sale": 1500, "d2": 120, "add": 50, "d5": 320, "mo": 640, "conf": "售價 Sale: 露營裝備 Camping 1500 vs 登山裝備 Mountain 1200;", "photo": "p38"}, {"id": "CA-015", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "充氣式睡墊", "spec": "190*60*2.5cm", "en": "Inflatable sleeping pad", "specen": "190×60×2.5 cm", "sale": 1200, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "售價 Sale: 露營裝備 Camping 1200 vs 登山裝備 Mountain 1000;", "photo": "p27"}, {"id": "CA-016", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "六人鋁箔睡墊", "spec": "250*250cm", "en": "6-person foil foam mat", "specen": "250×250 cm", "sale": 1000, "d2": 120, "add": 50, "d5": 320, "mo": 640, "conf": "", "photo": "p07"}, {"id": "CA-017", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "四人鋁箔睡墊", "spec": "200*200cm", "en": "4-person foil foam mat", "specen": "200×200 cm", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p07"}, {"id": "CA-018", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "三人鋁箔睡墊", "spec": "200*150cm", "en": "3-person foil foam mat", "specen": "200×150 cm", "sale": 600, "d2": 80, "add": 50, "d5": 280, "mo": 560, "conf": "", "photo": "p07"}, {"id": "CA-019", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "二人鋁箔睡墊", "spec": "200*100cm", "en": "2-person foil foam mat", "specen": "200×100 cm", "sale": 400, "d2": 60, "add": 50, "d5": 260, "mo": 520, "conf": "", "photo": "p07"}, {"id": "CA-020", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "地墊布", "spec": "200*200cm", "en": "Ground cloth", "specen": "200×200 cm", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p39"}, {"id": "CA-021", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "大露營桌", "spec": "120*60", "en": "Large camp table", "specen": "120×60 cm", "sale": 2500, "d2": 200, "add": 50, "d5": 400, "mo": 800, "conf": "", "photo": "p45"}, {"id": "CA-022", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "豪華露營椅", "spec": "承重120公斤", "en": "Deluxe camp chair", "specen": "120 kg load", "sale": 1500, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p46"}, {"id": "CA-023", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "簡易露營椅", "spec": "承重80公斤", "en": "Basic camp chair", "specen": "80 kg load", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p84"}, {"id": "CA-024", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "冰桶", "spec": "48L", "en": "Cooler", "specen": "48 L", "sale": 2500, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p40"}, {"id": "CA-025", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "冰桶", "spec": "28L", "en": "Cooler", "specen": "28 L", "sale": 2000, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "五至十天 5–10 d: 露營裝備 Camping 300 vs 其他裝備 Other 250;月租 Monthly: 露營裝備 Camping 600 vs 其他裝備 Other 500;", "photo": "p49"}, {"id": "CA-026", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "大水桶", "spec": "75*50*45", "en": "Large water tub", "specen": "75×50×45 cm", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p42"}, {"id": "CA-027", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "手推車", "spec": "", "en": "Folding cart", "specen": "", "sale": 1500, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p56"}, {"id": "CA-028", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "收訥盒", "spec": "69*48*39", "en": "Storage box", "specen": "69×48×39 cm", "sale": 350, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "每加一日 +1 day: 露營裝備 Camping 30 vs 其他裝備 Other 20;五至十天 5–10 d: 露營裝備 Camping 170 vs 其他裝備 Other 130;月租 Monthly: 露營裝備 Camping 340 vs 其他裝備 Other 260;", "photo": "p60"}, {"id": "CA-029", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "飲料桶", "spec": "17L", "en": "Beverage dispenser", "specen": "17 L", "sale": 1500, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p87"}, {"id": "CA-030", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "飲料桶", "spec": "8L", "en": "Beverage dispenser", "specen": "8 L", "sale": 1000, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p88"}, {"id": "CA-031", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "保冰磚", "spec": "", "en": "Ice pack", "specen": "", "sale": 200, "d2": 30, "add": 10, "d5": 70, "mo": 140, "conf": "", "photo": "p25"}, {"id": "CA-032", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "工業用電扇", "spec": "", "en": "Industrial fan (small)", "specen": "", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "售價 Sale: 露營裝備 Camping 800 vs 露營裝備 Camping 1200;兩天一夜 2D1N: 露營裝備 Camping 100 vs 露營裝備 Camping 150;五至十天 5–10 d: 露營裝備 Camping 300 vs 露營裝備 Camping 350;月租 Monthly: 露營裝備 Camping 600 vs 露營裝備 Camping 700;", "photo": "p52"}, {"id": "CA-033", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "工業用電扇", "spec": "", "en": "Industrial fan (large)", "specen": "", "sale": 1200, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "售價 Sale: 露營裝備 Camping 800 vs 露營裝備 Camping 1200;兩天一夜 2D1N: 露營裝備 Camping 100 vs 露營裝備 Camping 150;五至十天 5–10 d: 露營裝備 Camping 300 vs 露營裝備 Camping 350;月租 Monthly: 露營裝備 Camping 600 vs 露營裝備 Camping 700;", "photo": "p53"}, {"id": "CA-034", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "四方爐(小瓦斯罐)", "spec": "", "en": "Portable gas stove (small canister)", "specen": "", "sale": 1500, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p36"}, {"id": "CA-035", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "延長線", "spec": "20m", "en": "Extension cord", "specen": "20 m", "sale": 2000, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p54"}, {"id": "CA-036", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "LED營燈", "spec": "", "en": "LED lantern", "specen": "", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "售價 Sale: 露營裝備 Camping 800 vs 登山裝備 Mountain 1200;", "photo": "p72"}, {"id": "CA-037", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "LED小營燈", "spec": "", "en": "Small LED lantern", "specen": "", "sale": 300, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p50"}, {"id": "CA-038", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "工作吊燈", "spec": "", "en": "Hanging work light", "specen": "", "sale": 500, "d2": 100, "add": 50, "d5": 300, "mo": 260, "conf": "", "photo": "p51"}, {"id": "CA-039", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "燈條", "spec": "5m", "en": "LED light strip", "specen": "5 m", "sale": 1000, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p70"}, {"id": "CA-040", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "頭燈", "spec": "", "en": "Headlamp", "specen": "", "sale": 500, "d2": 70, "add": 30, "d5": 170, "mo": 340, "conf": "五至十天 5–10 d: 露營裝備 Camping 170 vs 登山裝備 Mountain 190;月租 Monthly: 露營裝備 Camping 340 vs 登山裝備 Mountain 380;", "photo": "p86"}, {"id": "CA-041", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "充電頭燈", "spec": "含電池*2", "en": "Rechargeable headlamp", "specen": "incl. 2 batteries", "sale": 600, "d2": 120, "add": 50, "d5": 320, "mo": 640, "conf": "", "photo": "p85"}, {"id": "CA-042", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "充電電池*2", "spec": "18650", "en": "Rechargeable batteries ×2", "specen": "18650", "sale": 260, "d2": 20, "add": 20, "d5": 100, "mo": 200, "conf": "", "photo": ""}, {"id": "CA-043", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "掛勾", "spec": "", "en": "Hook", "specen": "", "sale": 200, "d2": 20, "add": 10, "d5": 60, "mo": 120, "conf": "", "photo": "p59"}, {"id": "CA-044", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "手電筒", "spec": "", "en": "Flashlight", "specen": "", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p57"}, {"id": "CA-045", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "瑞士刀", "spec": "", "en": "Swiss Army knife", "specen": "", "sale": 600, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p73"}, {"id": "CA-046", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "指北針+口哨組", "spec": "", "en": "Compass + whistle set", "specen": "", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p58"}, {"id": "CA-047", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "瓦斯噴槍頭", "spec": "", "en": "Gas torch head", "specen": "", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "每加一日 +1 day: 露營裝備 Camping 30 vs 登山裝備 Mountain 30 vs 其他裝備 Other 20;五至十天 5–10 d: 露營裝備 Camping 170 vs 登山裝備 Mountain 170 vs 其他裝備 Other 150;月租 Monthly: 露營裝備 Camping 340 vs 登山裝備 Mountain 340 vs 其他裝備 Other 300;", "photo": "p35"}, {"id": "CA-048", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "焚火台", "spec": "50*50*40cm", "en": "Fire pit", "specen": "50×50×40 cm", "sale": 1200, "d2": 200, "add": 100, "d5": 600, "mo": 1200, "conf": "", "photo": "p69"}, {"id": "CA-049", "page": "camping.htm", "cat": "露營裝備 Camping", "zh": "烤肉架", "spec": "105*60*50cm", "en": "BBQ grill", "specen": "105×60×50 cm", "sale": 2500, "d2": 300, "add": 100, "d5": 700, "mo": 1400, "conf": "", "photo": "p68"}, {"id": "MO-050", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "三人登山帳蓬+鋁墊", "spec": "200*160*110cm 7001鋁合金 防撕裂牛津布 防水係數pu2000+ 淨重2.5kg", "en": "3-person backpacking tent + foil groundsheet", "specen": "200×160×110 cm, 7001 aluminum poles, ripstop oxford, PU2000+, 2.5 kg", "sale": 3600, "d2": 400, "add": 150, "d5": 1000, "mo": 2000, "conf": "", "photo": "p74"}, {"id": "MO-051", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "二人登山帳蓬+鋁墊", "spec": "200*135*100cm 7001鋁合金 防撕裂牛津布 防水係數pu2000+ 淨重2.1kg", "en": "2-person backpacking tent + foil groundsheet", "specen": "200×135×100 cm, 7001 aluminum poles, ripstop oxford, PU2000+, 2.1 kg", "sale": 3000, "d2": 350, "add": 150, "d5": 950, "mo": 1900, "conf": "", "photo": "p83"}, {"id": "MO-052", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "單人登山帳蓬+鋁墊", "spec": "200*80*100cm 7001鋁合金 矽膠面料 防水係數pu4000+ 淨重1.2kg", "en": "1-person backpacking tent + foil groundsheet", "specen": "200×80×100 cm, 7001 aluminum poles, silnylon, PU4000+, 1.2 kg", "sale": 3000, "d2": 350, "add": 150, "d5": 950, "mo": 1900, "conf": "", "photo": "p82"}, {"id": "MO-053", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "八人帳蓬+鋁墊", "spec": "300*300*185cm 淨重:7.5kg (嘉隆蒙古包台製)", "en": "8-person dome tent + foil groundsheet", "specen": "300×300×185 cm, 7.5 kg, Jialong (Taiwan-made)", "sale": 4500, "d2": 600, "add": 100, "d5": 1000, "mo": 2000, "conf": "", "photo": "p02"}, {"id": "MO-054", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "六人帳蓬+鋁墊", "spec": "250*250*180cm 淨重:6.5kg (嘉隆蒙古包台製)", "en": "6-person dome tent + foil groundsheet", "specen": "250×250×180 cm, 6.5 kg, Jialong (Taiwan-made)", "sale": 3600, "d2": 500, "add": 100, "d5": 900, "mo": 1800, "conf": "", "photo": "p02"}, {"id": "MO-055", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "四人帳蓬+鋁墊", "spec": "200*200*165cm 淨重:4.5kg (嘉隆蒙古包台製)", "en": "4-person dome tent + foil groundsheet", "specen": "200×200×165 cm, 4.5 kg, Jialong (Taiwan-made)", "sale": 3200, "d2": 400, "add": 100, "d5": 800, "mo": 1600, "conf": "五至十天 5–10 d: 露營裝備 Camping 850 vs 登山裝備 Mountain 800;月租 Monthly: 露營裝備 Camping 1700 vs 登山裝備 Mountain 1600;", "photo": "p02"}, {"id": "MO-056", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "二人帳蓬+鋁墊", "spec": "200*120*135cm 淨重:3kg", "en": "2-person dome tent + foil groundsheet", "specen": "200×120×135 cm, 3 kg", "sale": 2500, "d2": 300, "add": 100, "d5": 700, "mo": 1400, "conf": "", "photo": "p02"}, {"id": "MO-057", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "登山大背包一", "spec": "", "en": "Backpacking pack (type 1)", "specen": "", "sale": 5000, "d2": 200, "add": 50, "d5": 400, "mo": 800, "conf": "", "photo": "p10"}, {"id": "MO-058", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "登山大背包二", "spec": "", "en": "Backpacking pack (type 2)", "specen": "", "sale": 6000, "d2": 250, "add": 50, "d5": 450, "mo": 900, "conf": "", "photo": "p44"}, {"id": "MO-059", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "背包套", "spec": "", "en": "Pack rain cover", "specen": "", "sale": 200, "d2": 20, "add": 10, "d5": 50, "mo": 100, "conf": "", "photo": "p14"}, {"id": "MO-060", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "羽絨睡袋", "spec": "1.6kg -5~-10度", "en": "Down sleeping bag", "specen": "1.6 kg, rated -5 to -10 °C", "sale": 4200, "d2": 200, "add": 60, "d5": 440, "mo": 880, "conf": "月租 Monthly: 露營裝備 Camping 800 vs 登山裝備 Mountain 880;", "photo": "p21"}, {"id": "MO-061", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "羽絨睡袋二", "spec": "1.2kg -5~-10度", "en": "Down sleeping bag (type 2)", "specen": "1.2 kg, rated -5 to -10 °C", "sale": 4800, "d2": 200, "add": 60, "d5": 440, "mo": 880, "conf": "", "photo": "p21"}, {"id": "MO-062", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "蛋巢睡墊", "spec": "185*55*1.8cm", "en": "Egg-crate foam pad", "specen": "185×55×1.8 cm", "sale": 700, "d2": 120, "add": 50, "d5": 320, "mo": 640, "conf": "", "photo": "p77"}, {"id": "MO-063", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "充氣式睡墊", "spec": "190*60*5cm", "en": "Inflatable sleeping pad", "specen": "190×60×5 cm", "sale": 1200, "d2": 120, "add": 50, "d5": 320, "mo": 640, "conf": "售價 Sale: 露營裝備 Camping 1500 vs 登山裝備 Mountain 1200;", "photo": "p38"}, {"id": "MO-064", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "充氣式睡墊", "spec": "190*60*2.5cm", "en": "Inflatable sleeping pad", "specen": "190×60×2.5 cm", "sale": 1000, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "售價 Sale: 露營裝備 Camping 1200 vs 登山裝備 Mountain 1000;", "photo": "p27"}, {"id": "MO-065", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "羽毛衣(marmot)", "spec": "", "en": "Down jacket (Marmot)", "specen": "", "sale": 6500, "d2": 200, "add": 50, "d5": 400, "mo": 800, "conf": "", "photo": "p01"}, {"id": "MO-066", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "防風防雨外套(mount-bell)", "spec": "外套單件", "en": "Rain shell jacket (Montbell)", "specen": "jacket only", "sale": 8500, "d2": 200, "add": 50, "d5": 400, "mo": 800, "conf": "", "photo": "p06"}, {"id": "MO-067", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "防風防雨外套+褲子一套(mount-bell)", "spec": "一套", "en": "Rain shell jacket + pants set (Montbell)", "specen": "set", "sale": 0, "d2": 300, "add": 100, "d5": 700, "mo": 1400, "conf": "", "photo": "p06"}, {"id": "MO-068", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "綁腿(犀牛)", "spec": "", "en": "Gaiters (Rhino)", "specen": "", "sale": 600, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p76"}, {"id": "MO-069", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "雨鞋", "spec": "", "en": "Rain boots", "specen": "", "sale": 600, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p81"}, {"id": "MO-070", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "羊毛帽", "spec": "", "en": "Wool beanie", "specen": "", "sale": 1200, "d2": 80, "add": 50, "d5": 280, "mo": 560, "conf": "", "photo": "p04"}, {"id": "MO-071", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "羊毛頭巾", "spec": "", "en": "Wool neck gaiter", "specen": "", "sale": 1200, "d2": 80, "add": 50, "d5": 280, "mo": 560, "conf": "", "photo": "p05"}, {"id": "MO-072", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "保暖手套", "spec": "", "en": "Insulated gloves", "specen": "", "sale": 1200, "d2": 80, "add": 50, "d5": 280, "mo": 560, "conf": "", "photo": "p00"}, {"id": "MO-073", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "六人套鍋", "spec": "", "en": "6-person cook set", "specen": "", "sale": 2600, "d2": 200, "add": 50, "d5": 400, "mo": 800, "conf": "", "photo": "p48"}, {"id": "MO-074", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "水袋", "spec": "10L", "en": "Water bag", "specen": "10 L", "sale": 600, "d2": 80, "add": 50, "d5": 280, "mo": 560, "conf": "", "photo": "p66"}, {"id": "MO-075", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "蜘蛛爐(大)", "spec": "", "en": "Remote-canister stove (large)", "specen": "", "sale": 1500, "d2": 120, "add": 50, "d5": 320, "mo": 640, "conf": "", "photo": "p78"}, {"id": "MO-076", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "攻頂爐(小)", "spec": "", "en": "Compact canister stove (small)", "specen": "", "sale": 1200, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p61"}, {"id": "MO-077", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "瓦斯噴槍頭", "spec": "", "en": "Gas torch head", "specen": "", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "每加一日 +1 day: 露營裝備 Camping 30 vs 登山裝備 Mountain 30 vs 其他裝備 Other 20;五至十天 5–10 d: 露營裝備 Camping 170 vs 登山裝備 Mountain 170 vs 其他裝備 Other 150;月租 Monthly: 露營裝備 Camping 340 vs 登山裝備 Mountain 340 vs 其他裝備 Other 300;", "photo": "p35"}, {"id": "MO-078", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "LED營燈", "spec": "", "en": "LED lantern", "specen": "", "sale": 1200, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "售價 Sale: 露營裝備 Camping 800 vs 登山裝備 Mountain 1200;", "photo": "p72"}, {"id": "MO-079", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "瓦斯燈", "spec": "", "en": "Gas lantern", "specen": "", "sale": 1800, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p11"}, {"id": "MO-080", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "登山杖", "spec": "", "en": "Trekking pole", "specen": "", "sale": 700, "d2": 70, "add": 30, "d5": 190, "mo": 380, "conf": "", "photo": "p20"}, {"id": "MO-081", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "頭燈", "spec": "", "en": "Headlamp", "specen": "", "sale": 500, "d2": 70, "add": 30, "d5": 190, "mo": 380, "conf": "五至十天 5–10 d: 露營裝備 Camping 170 vs 登山裝備 Mountain 190;月租 Monthly: 露營裝備 Camping 340 vs 登山裝備 Mountain 380;", "photo": "p86"}, {"id": "MO-082", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "充電頭燈", "spec": "含充電電池*2", "en": "Rechargeable headlamp", "specen": "incl. 2 rechargeable batteries", "sale": 600, "d2": 120, "add": 50, "d5": 320, "mo": 640, "conf": "", "photo": "p85"}, {"id": "MO-083", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "充電電池*2", "spec": "18650", "en": "Rechargeable batteries ×2", "specen": "18650", "sale": 260, "d2": 20, "add": 20, "d5": 100, "mo": 200, "conf": "", "photo": ""}, {"id": "MO-084", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "手電筒", "spec": "", "en": "Flashlight", "specen": "", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p57"}, {"id": "MO-085", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "瑞士刀", "spec": "", "en": "Swiss Army knife", "specen": "", "sale": 600, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p73"}, {"id": "MO-086", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "指北針+口哨組", "spec": "", "en": "Compass + whistle set", "specen": "", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p58"}, {"id": "MO-087", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "冰爪/四爪", "spec": "", "en": "Crampons, 4-point", "specen": "", "sale": 800, "d2": 70, "add": 30, "d5": 190, "mo": 380, "conf": "", "photo": "p37"}, {"id": "MO-088", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "冰爪/十二爪", "spec": "", "en": "Crampons, 12-point", "specen": "", "sale": 3700, "d2": 250, "add": 50, "d5": 450, "mo": 900, "conf": "", "photo": "p33"}, {"id": "MO-089", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "冰爪/十爪", "spec": "", "en": "Crampons, 10-point", "specen": "", "sale": 3000, "d2": 200, "add": 50, "d5": 400, "mo": 800, "conf": "", "photo": "p33"}, {"id": "MO-090", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "冰斧", "spec": "", "en": "Ice axe", "specen": "", "sale": 3000, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p29"}, {"id": "MO-091", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "攀岩吊帶組", "spec": "", "en": "Climbing harness set", "specen": "", "sale": 2600, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p12"}, {"id": "MO-092", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "溯溪吊帶", "spec": "", "en": "Canyoning harness", "specen": "", "sale": 2500, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "五至十天 5–10 d: 登山裝備 Mountain 300 vs 溯溪裝備 River tracing 350;月租 Monthly: 登山裝備 Mountain 600 vs 溯溪裝備 River tracing 700;", "photo": "p23"}, {"id": "MO-093", "page": "mount_2.htm", "cat": "登山裝備 Mountain", "zh": "保溫瓶", "spec": "", "en": "Thermos", "specen": "", "sale": 1200, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p26"}, {"id": "RI-094", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "防寒衣", "spec": "", "en": "Wetsuit", "specen": "", "sale": 2500, "d2": 150, "add": 50, "d5": 400, "mo": 800, "conf": "售價 Sale: 溯溪裝備 River tracing 2500 vs 水上裝備 Water 2200;", "photo": "p22"}, {"id": "RI-095", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "水母衣", "spec": "", "en": "Rash guard", "specen": "", "sale": 1500, "d2": 100, "add": 50, "d5": 350, "mo": 700, "conf": "售價 Sale: 溯溪裝備 River tracing 1500 vs 水上裝備 Water 2000;", "photo": "p65"}, {"id": "RI-096", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "溯溪鞋", "spec": "", "en": "River tracing shoes (felt sole)", "specen": "", "sale": 600, "d2": 60, "add": 30, "d5": 180, "mo": 360, "conf": "", "photo": "p17"}, {"id": "RI-097", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "溯溪鞋(防磨布)", "spec": "", "en": "River tracing shoes (abrasion-resistant upper)", "specen": "", "sale": 800, "d2": 80, "add": 30, "d5": 200, "mo": 400, "conf": "", "photo": "p17"}, {"id": "RI-098", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "救生衣", "spec": "", "en": "Life jacket (PFD)", "specen": "", "sale": 1000, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p03"}, {"id": "RI-099", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "膠盔", "spec": "", "en": "Helmet", "specen": "", "sale": 500, "d2": 20, "add": 10, "d5": 60, "mo": 120, "conf": "", "photo": "p18"}, {"id": "RI-100", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "溯溪吊帶", "spec": "", "en": "Canyoning harness", "specen": "", "sale": 2500, "d2": 100, "add": 50, "d5": 350, "mo": 700, "conf": "五至十天 5–10 d: 登山裝備 Mountain 300 vs 溯溪裝備 River tracing 350;月租 Monthly: 登山裝備 Mountain 600 vs 溯溪裝備 River tracing 700;", "photo": "p23"}, {"id": "RI-101", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "衛浴帳", "spec": "", "en": "Shower / changing tent", "specen": "", "sale": 1500, "d2": 100, "add": 50, "d5": 350, "mo": 700, "conf": "五至十天 5–10 d: 溯溪裝備 River tracing 350 vs 水上裝備 Water 300;月租 Monthly: 溯溪裝備 River tracing 700 vs 水上裝備 Water 600;", "photo": "p64"}, {"id": "RI-102", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "防水袋", "spec": "", "en": "Dry bag", "specen": "", "sale": 1200, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p80"}, {"id": "RI-103", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "豬鼻子", "spec": "", "en": "Belay/rappel device (tube style)", "specen": "", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p79"}, {"id": "RI-104", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "大D", "spec": "", "en": "Large D carabiner", "specen": "", "sale": 600, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p32"}, {"id": "RI-105", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "八字環", "spec": "", "en": "Figure-8 descender", "specen": "", "sale": 500, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p28"}, {"id": "RI-106", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "扁繩", "spec": "4m", "en": "Webbing sling", "specen": "4 m", "sale": 400, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p55"}, {"id": "RI-107", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "浮水繩", "spec": "30m", "en": "Floating rope / throw rope", "specen": "30 m", "sale": 3000, "d2": 300, "add": 100, "d5": 700, "mo": 1400, "conf": "", "photo": "p67"}, {"id": "RI-108", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "救生圈", "spec": "", "en": "Life ring", "specen": "", "sale": 1000, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p62"}, {"id": "RI-109", "page": "river.htm", "cat": "溯溪裝備 River tracing", "zh": "大水桶", "spec": "75*50*45", "en": "Large water tub", "specen": "75×50×45 cm", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p42"}, {"id": "WA-110", "page": "water.htm", "cat": "水上裝備 Water", "zh": "防寒衣", "spec": "", "en": "Wetsuit", "specen": "", "sale": 2200, "d2": 150, "add": 50, "d5": 400, "mo": 800, "conf": "售價 Sale: 溯溪裝備 River tracing 2500 vs 水上裝備 Water 2200;", "photo": "p22"}, {"id": "WA-111", "page": "water.htm", "cat": "水上裝備 Water", "zh": "水母衣", "spec": "", "en": "Rash guard", "specen": "", "sale": 2000, "d2": 100, "add": 50, "d5": 350, "mo": 700, "conf": "售價 Sale: 溯溪裝備 River tracing 1500 vs 水上裝備 Water 2000;", "photo": "p65"}, {"id": "WA-112", "page": "water.htm", "cat": "水上裝備 Water", "zh": "救生衣", "spec": "", "en": "Life jacket (PFD)", "specen": "", "sale": 1000, "d2": 50, "add": 30, "d5": 170, "mo": 340, "conf": "", "photo": "p63"}, {"id": "WA-113", "page": "water.htm", "cat": "水上裝備 Water", "zh": "救生圈", "spec": "", "en": "Life ring", "specen": "", "sale": 1000, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p62"}, {"id": "WA-114", "page": "water.htm", "cat": "水上裝備 Water", "zh": "魚雷浮標", "spec": "", "en": "Rescue tube (torpedo buoy)", "specen": "", "sale": 1000, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p19"}, {"id": "WA-115", "page": "water.htm", "cat": "水上裝備 Water", "zh": "衛浴帳", "spec": "", "en": "Shower / changing tent", "specen": "", "sale": 1500, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "五至十天 5–10 d: 溯溪裝備 River tracing 350 vs 水上裝備 Water 300;月租 Monthly: 溯溪裝備 River tracing 700 vs 水上裝備 Water 600;", "photo": "p64"}, {"id": "WA-116", "page": "water.htm", "cat": "水上裝備 Water", "zh": "大水桶", "spec": "75*50*45", "en": "Large water tub", "specen": "75×50×45 cm", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p42"}, {"id": "WA-117", "page": "water.htm", "cat": "水上裝備 Water", "zh": "獨木舟2人", "spec": "390*90*35cm 須自取", "en": "Tandem sit-on-top kayak", "specen": "390×90×35 cm, pickup only", "sale": 50000, "d2": 1000, "add": 300, "d5": 2200, "mo": 4400, "conf": "", "photo": "p16"}, {"id": "WA-118", "page": "water.htm", "cat": "水上裝備 Water", "zh": "獨木舟單人", "spec": "270*80*30cm 須自取", "en": "Solo sit-on-top kayak", "specen": "270×80×30 cm, pickup only", "sale": 35000, "d2": 800, "add": 300, "d5": 2000, "mo": 4000, "conf": "", "photo": "p15"}, {"id": "AN-119", "page": "another.htm", "cat": "其他裝備 Other", "zh": "冰桶", "spec": "48L", "en": "Cooler", "specen": "48 L", "sale": 2500, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p40"}, {"id": "AN-120", "page": "another.htm", "cat": "其他裝備 Other", "zh": "冰桶", "spec": "28L", "en": "Cooler", "specen": "28 L", "sale": 2000, "d2": 100, "add": 50, "d5": 250, "mo": 500, "conf": "五至十天 5–10 d: 露營裝備 Camping 300 vs 其他裝備 Other 250;月租 Monthly: 露營裝備 Camping 600 vs 其他裝備 Other 500;", "photo": "p49"}, {"id": "AN-121", "page": "another.htm", "cat": "其他裝備 Other", "zh": "大水桶", "spec": "75*50*45", "en": "Large water tub", "specen": "75×50×45 cm", "sale": 800, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p42"}, {"id": "AN-122", "page": "another.htm", "cat": "其他裝備 Other", "zh": "手推車", "spec": "", "en": "Folding cart", "specen": "", "sale": 1500, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p56"}, {"id": "AN-123", "page": "another.htm", "cat": "其他裝備 Other", "zh": "高枝剪", "spec": "", "en": "Pole pruner", "specen": "", "sale": 1500, "d2": 150, "add": 50, "d5": 350, "mo": 700, "conf": "", "photo": "p75"}, {"id": "AN-124", "page": "another.htm", "cat": "其他裝備 Other", "zh": "剪枝夾", "spec": "", "en": "Pruning shears", "specen": "", "sale": 600, "d2": 100, "add": 20, "d5": 180, "mo": 360, "conf": "", "photo": "p31"}, {"id": "AN-125", "page": "another.htm", "cat": "其他裝備 Other", "zh": "剪枝刀", "spec": "", "en": "Pruning knife / saw", "specen": "", "sale": 500, "d2": 50, "add": 20, "d5": 130, "mo": 260, "conf": "", "photo": "p30"}, {"id": "AN-126", "page": "another.htm", "cat": "其他裝備 Other", "zh": "收訥盒", "spec": "69*48*39", "en": "Storage box", "specen": "69×48×39 cm", "sale": 350, "d2": 50, "add": 20, "d5": 130, "mo": 260, "conf": "每加一日 +1 day: 露營裝備 Camping 30 vs 其他裝備 Other 20;五至十天 5–10 d: 露營裝備 Camping 170 vs 其他裝備 Other 130;月租 Monthly: 露營裝備 Camping 340 vs 其他裝備 Other 260;", "photo": "p60"}, {"id": "AN-127", "page": "another.htm", "cat": "其他裝備 Other", "zh": "大聲公", "spec": "", "en": "Megaphone", "specen": "", "sale": 1000, "d2": 100, "add": 50, "d5": 250, "mo": 500, "conf": "", "photo": "p43"}, {"id": "AN-128", "page": "another.htm", "cat": "其他裝備 Other", "zh": "瓦斯噴槍頭", "spec": "", "en": "Gas torch head", "specen": "", "sale": 500, "d2": 50, "add": 20, "d5": 150, "mo": 300, "conf": "每加一日 +1 day: 露營裝備 Camping 30 vs 登山裝備 Mountain 30 vs 其他裝備 Other 20;五至十天 5–10 d: 露營裝備 Camping 170 vs 登山裝備 Mountain 170 vs 其他裝備 Other 150;月租 Monthly: 露營裝備 Camping 340 vs 登山裝備 Mountain 340 vs 其他裝備 Other 300;", "photo": "p35"}, {"id": "AN-129", "page": "another.htm", "cat": "其他裝備 Other", "zh": "旅行箱", "spec": "28L", "en": "Suitcase", "specen": "28 in (site says 28L)", "sale": 3000, "d2": 100, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p13"}, {"id": "AN-130", "page": "another.htm", "cat": "其他裝備 Other", "zh": "旅行箱", "spec": "24L", "en": "Suitcase", "specen": "24 in (site says 24L)", "sale": 2000, "d2": 80, "add": 50, "d5": 300, "mo": 600, "conf": "", "photo": "p13"}, {"id": "AN-131", "page": "another.htm", "cat": "其他裝備 Other", "zh": "旅行箱", "spec": "20L", "en": "Suitcase", "specen": "20 in (site says 20L)", "sale": 1500, "d2": 50, "add": 50, "d5": 250, "mo": 500, "conf": "", "photo": "p13"}];
+const CATS = [
+  {slug:'camping', page:'camping.htm', zh:'露營裝備', en:'Camping', dzh:'帳篷、睡袋、睡墊、桌椅、爐具、燈具，兩天一夜起租。', den:'Tents, sleeping bags, pads, tables and chairs, stoves and lighting. Rent from 2 days / 1 night.', photo:'p74'},
+  {slug:'mountain', page:'mount_2.htm', zh:'登山裝備', en:'Mountain', dzh:'登山帳、大背包、羽絨睡袋、雨衣、冰爪、爐頭。', den:'Backpacking tents, packs, down bags, rain shells, crampons, stoves.', photo:'p83'},
+  {slug:'river', page:'river.htm', zh:'溯溪裝備', en:'River tracing', dzh:'溯溪鞋、防寒衣、救生衣、頭盔、吊帶與繩索。', den:'River shoes, wetsuits, PFDs, helmets, harnesses and rope.', photo:'p17'},
+  {slug:'water', page:'water.htm', zh:'水上裝備', en:'Water', dzh:'獨木舟、救生衣、救生圈、防寒衣。獨木舟須自取。', den:'Kayaks, PFDs, life rings, wetsuits. Kayaks are collect-in-person only.', photo:'p16'},
+  {slug:'other', page:'another.htm', zh:'其他裝備', en:'Other', dzh:'冰桶、手推車、園藝工具、大聲公、旅行箱。', den:'Coolers, carts, garden tools, megaphone, suitcases.', photo:'p56'}
+];
+const TIERS=[{k:'d2',zh:'兩天一夜',en:'2 days / 1 night',szh:'基本租金',sen:'base rate'},{k:'add',zh:'每加一日',en:'Each extra day',szh:'超過兩天一夜後',sen:'beyond 2D1N'},{k:'d5',zh:'五至十天',en:'5–10 days',szh:'包價',sen:'flat rate'},{k:'mo',zh:'月租',en:'Monthly',szh:'30 天包價',sen:'30-day flat rate'},{k:'sale',zh:'售價',en:'Buy',szh:'購買（非租金）',sen:'purchase, not rent',cls:'buy'}];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const bi=(zh,en)=>`<span class="zh">${esc(zh)}</span><span class="en">${esc(en)}</span>`;
+const fmt=n=>n?'NT$'+n.toLocaleString('en-US'):'—';
+const catBy=s=>CATS.find(c=>c.slug===s);
+const img=(it,cls)=>it.photo?`<img src="photos/${it.photo}.jpg" alt="" loading="lazy">`:`<div class="ph">${bi('尚無照片','No photo yet')}</div>`;
+
+function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo(0,0);}
+function setNav(key){document.querySelectorAll('[data-nav]').forEach(a=>{if(a.dataset.nav===key)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});document.getElementById('dd-btn').style.background=key==='rent'?'rgba(255,255,255,.12)':'';}
+function renderCat(slug){
+  const c=catBy(slug); if(!c) return route('/');
+  document.getElementById('cat-title').innerHTML=bi(c.zh,c.en);
+  document.getElementById('cat-desc').innerHTML=bi(c.dzh,c.den);
+  document.getElementById('subnav').innerHTML=CATS.map(x=>`<a href="#/rent/${x.slug}"${x.slug===slug?' aria-current="page"':''}>${bi(x.zh,x.en)}</a>`).join('');
+  const rows=ITEMS.filter(i=>i.page===c.page);
+  document.getElementById('grid').innerHTML=rows.map(it=>`<a class="card" href="#/rent/${slug}/${it.id}">
+    <div class="im">${img(it)}</div>
+    <div class="t"><h3>${bi(it.zh,it.en)}</h3><div class="spec">${bi(it.spec,it.specen)}</div>
+    <div class="price">${bi('兩天一夜','2 days / 1 night')} <b>${fmt(it.d2)}</b></div></div></a>`).join('');
+  show('page-cat'); setNav('rent');
+}
+function renderProd(slug,id){
+  const c=catBy(slug), it=ITEMS.find(i=>i.id===id); if(!c||!it) return route('/');
+  document.getElementById('crumbs').innerHTML=`<a href="#/">${bi('首頁','Home')}</a> › <a href="#/rent/${slug}">${bi(c.zh,c.en)}</a> › ${bi(it.zh,it.en)}`;
+  document.getElementById('prod').innerHTML=`<div class="im">${img(it)}</div>
+   <div>
+    <span class="cat-tag">${bi(c.zh,c.en)}</span>
+    <h1>${bi(it.zh,it.en)}</h1>
+    ${it.spec?`<p class="spec">${bi(it.spec,it.specen)}</p>`:''}
+    <dl class="rates">${TIERS.map(t=>`<div class="${t.cls||''}"><dt>${bi(t.zh,t.en)}<small>${bi(t.szh,t.sen)}</small></dt><dd>${fmt(it[t.k])}</dd></div>`).join('')}</dl>
+    ${it.conf?`<div class="flag">${bi('舊網站兩頁的價格不同，以上為本頁數字，待老闆確認。','The old site lists two different prices for this item. Figures above are from this page, pending confirmation.')}</div>`:''}
+    <a class="btn" href="tel:+886228230080">${bi('電話預約 02-2823-0080','Call to reserve 02-2823-0080')}</a>
+   </div>`;
+  show('page-prod'); setNav('rent');
+}
+function route(){
+  const h=location.hash.replace(/^#/,'')||'/'; const p=h.split('/').filter(Boolean);
+  closeMenus();
+  if(p.length===0){show('page-home');setNav('home');}
+  else if(p[0]==='rent'&&p.length===2) renderCat(p[1]);
+  else if(p[0]==='rent'&&p.length===3) renderProd(p[1],p[2]);
+  else if(p[0]==='policy'){show('page-policy');setNav('policy');}
+  else if(p[0]==='contact'){show('page-contact');setNav('contact');}
+  else {location.hash='#/';}
+}
+function closeMenus(){document.getElementById('drawer').classList.remove('open');document.getElementById('burger').setAttribute('aria-expanded','false');document.getElementById('dd').classList.remove('open');document.getElementById('dd-btn').setAttribute('aria-expanded','false');}
+function setLang(l){document.documentElement.lang=l==='en'?'en':'zh-Hant-TW';document.body.classList.toggle('en',l==='en');document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===l));try{localStorage.setItem('zbj-lang',l)}catch(e){}}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+  let l='zh';try{l=localStorage.getItem('zbj-lang')||'zh'}catch(e){} setLang(l);
+  document.getElementById('burger').addEventListener('click',e=>{const d=document.getElementById('drawer');const o=!d.classList.contains('open');d.classList.toggle('open',o);e.currentTarget.setAttribute('aria-expanded',o);});
+  document.getElementById('dd-btn').addEventListener('click',e=>{const d=document.getElementById('dd');const o=!d.classList.contains('open');d.classList.toggle('open',o);e.currentTarget.setAttribute('aria-expanded',o);});
+  document.addEventListener('click',e=>{if(!e.target.closest('#dd'))document.getElementById('dd').classList.remove('open');});
+  window.addEventListener('hashchange',route); route();
+});
+</script>
