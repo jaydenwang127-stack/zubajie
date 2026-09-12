@@ -11,6 +11,7 @@ import html
 import json
 import pathlib
 import re
+import hashlib
 import shutil
 import urllib.parse
 
@@ -330,7 +331,7 @@ def layout(c, title, desc, body, nav=None):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="{c.asset('css/site.css')}">
+<link rel="stylesheet" href="{c.asset('css/site.css')}?v={CSS_HASH}">
 </head>
 <body>
 {header(c, nav)}
@@ -596,8 +597,8 @@ section h1{font-size:2rem;margin-bottom:1.2rem}
 .lead{max-width:44ch;color:var(--mute);margin:0 0 2rem}
 
 /* home */
-.banner{position:relative;height:clamp(260px,26vw,480px);overflow:hidden;background:var(--green)}
-.banner img{width:100%;height:100%;object-fit:cover;object-position:50% 55%;display:block}
+.banner{position:relative;height:clamp(260px,30vw,560px);overflow:hidden;background:var(--green)}
+.banner img{width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 60%;display:block}
 .banner::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(27,36,30,.18),rgba(27,36,30,.42))}
 .banner-text{position:absolute;inset:0;z-index:1;display:grid;place-content:center;text-align:center;color:#fff;padding:0 20px;text-shadow:0 1px 12px rgba(0,0,0,.35)}
 .banner-text h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:600;letter-spacing:.02em;line-height:1.15;margin:0}
@@ -725,6 +726,8 @@ footer .note a[aria-current=true]{font-weight:700;text-decoration:none}
 @media (min-width:860px){.callbar{display:none}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 '''.lstrip()
+
+CSS_HASH = hashlib.sha1(CSS.encode()).hexdigest()[:8]
 
 # ---------------------------------------------------------------- build
 def write(rel, text):
