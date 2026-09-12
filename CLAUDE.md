@@ -24,7 +24,7 @@ photos/               shared
 Language switch links to the same page's translation, never the homepage. Generate the item pages with a small Python script from `data/items.json`; commit the output so hosting is just files.
 
 ## Design (Direction A, chosen)
-Colours: bg #F1F2EA, green #1E3A2B, ink #1B241E, blue #2F6F8F, rule #D6DACB. Noto Serif TC for headings, Noto Sans TC body. Plain headings, no slogans, no eyebrow labels. Product card = photo, name, spec on its own line underneath, then the 2D1N price.
+Colours: bg #F1F2EA, green #1E3A2B, ink #1B241E, blue #2F6F8F, rule #D6DACB. Noto Serif TC for headings, Noto Sans TC body. Plain headings, no slogans, no eyebrow labels. Home opens with a full-bleed photo banner: "Gear Rental Beitou" + 北投戶外裝備出租, the same text in both languages (Elaine, 2026-09-12). Product card = photo, name, spec on its own line underneath, then the 2D1N price.
 
 ## Rules
 - Never invent prices, policy text, or facts about the shop. Policy content is "待與老闆確認 / to be confirmed with the owner" until he supplies it.

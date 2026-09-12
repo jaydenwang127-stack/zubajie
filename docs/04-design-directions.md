@@ -23,3 +23,7 @@ Prices verbatim from the inventory Google Sheet (租八借_舊站盤點_inventor
 
 ## Next
 Build Phase 1 as real static pages in Claude Code, from this prototype. Then walk-in mockup, set the walk-in date.
+
+## Update 2026-09-12: home banner
+Elaine asked for a full-bleed photo banner at the top of the home page like a reference rental site: large white serif "Gear Rental Beitou" with 北投戶外裝備出租 letter-spaced beneath, identical on the ZH and EN versions. Replaces the old hero heading and three-photo mosaic; the lead sentence, CTAs and hours note sit under it.
+Photo: `photos/banner.jpg`, hikers in raincoats on a misty Taiwan ridge — Pexels #4956502 by Yu Lin Chen, Pexels license (free for commercial use, no attribution required). Cropped to 2400×960.

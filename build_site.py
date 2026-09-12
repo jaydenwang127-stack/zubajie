@@ -52,7 +52,8 @@ T = {
     'site_title':  ('租八借｜北投戶外裝備出租', '租八借 · Outdoor gear rental in Beitou'),
     'site_desc':   ('北投戶外裝備出租：露營、登山、溯溪、水上裝備。電話預約 02-2823-0080，捷運唭哩岸站附近，週一、週五營業。',
                     'Outdoor gear rental in Beitou, Taipei: camping, hiking, river-tracing and water gear. Call 02-2823-0080. Near MRT Qilian, open Mon & Fri.'),
-    'hero_h1':     ('北投戶外裝備出租', 'Outdoor gear rental in Beitou'),
+    'banner_h1':   ('Gear Rental Beitou', 'Gear Rental Beitou'),
+    'banner_sub':  ('北投戶外裝備出租', '北投戶外裝備出租'),
     'hero_p':      ('露營、登山、溯溪、水上裝備。電話預約，到店取還。',
                     'Camping, hiking, river-tracing and water gear. Book by phone, pick up in store.'),
     'cta_browse':  ('裝備與價格', 'Gear and prices'),
@@ -352,18 +353,17 @@ def page_home(lang):
     steps = ''.join(
         f'<div class="step"><div class="n">{n}</div><h3>{pick(h, lang)}</h3><p>{pick(p, lang)}</p></div>'
         for n, h, p in STEPS)
-    body = f'''<div class="hero"><div class="wrap">
-  <div>
-    <h1>{t('hero_h1', lang)}</h1>
-    <p>{t('hero_p', lang)}</p>
-    <div class="hero-cta"><a class="btn" href="{c.link('rent/camping.html')}">{t('cta_browse', lang)}</a><a class="btn ghost" href="{TEL_HREF}">{t('cta_call', lang)}</a></div>
-    <div class="hours-note">{t('hours_note', lang)}</div>
+    body = f'''<div class="banner">
+  <img src="{c.photo('banner')}" alt="" width="2400" height="960" fetchpriority="high">
+  <div class="banner-text">
+    <h1 lang="en">{t('banner_h1', lang)}</h1>
+    <p lang="zh-Hant-TW">{t('banner_sub', lang)}</p>
   </div>
-  <div class="mosaic">
-    <img class="m1" src="{c.photo('big74')}" alt="">
-    <img src="{c.photo('big17')}" alt="">
-    <img src="{c.photo('big16')}" alt="">
-  </div>
+</div>
+<div class="intro"><div class="wrap">
+  <p>{t('hero_p', lang)}</p>
+  <div class="hero-cta"><a class="btn" href="{c.link('rent/camping.html')}">{t('cta_browse', lang)}</a><a class="btn ghost" href="{TEL_HREF}">{t('cta_call', lang)}</a></div>
+  <div class="hours-note">{t('hours_note', lang)}</div>
 </div></div>
 <section><div class="wrap">
   <h2>{t('h_cats', lang)}</h2>
@@ -596,13 +596,16 @@ section h1{font-size:2rem;margin-bottom:1.2rem}
 .lead{max-width:44ch;color:var(--mute);margin:0 0 2rem}
 
 /* home */
-.hero{padding-block:2.5rem 3rem}
-.hero .wrap{display:grid;gap:2rem}
-@media (min-width:860px){.hero .wrap{grid-template-columns:1.05fr 1fr;align-items:center;gap:3.5rem}.hero{padding-block:4rem}}
-.hero h1{font-size:2rem;line-height:1.25}
-@media (min-width:720px){.hero h1{font-size:2.6rem}}
-.hero p{max-width:40ch;margin:1rem 0 0;color:var(--mute);font-size:1.05rem}
-.hero-cta{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.6rem}
+.banner{position:relative;height:clamp(260px,26vw,480px);overflow:hidden;background:var(--green)}
+.banner img{width:100%;height:100%;object-fit:cover;object-position:50% 55%;display:block}
+.banner::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(27,36,30,.18),rgba(27,36,30,.42))}
+.banner-text{position:absolute;inset:0;z-index:1;display:grid;place-content:center;text-align:center;color:#fff;padding:0 20px;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+.banner-text h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:600;letter-spacing:.02em;line-height:1.15;margin:0}
+.banner-text p{font-family:"Noto Serif TC",serif;font-size:clamp(.95rem,1.6vw,1.2rem);letter-spacing:.32em;margin:.7rem 0 0;text-indent:.32em;opacity:.95}
+.intro{padding-block:2rem 1rem}
+.intro p{max-width:44ch;margin:0;color:var(--mute);font-size:1.05rem}
+@media (min-width:720px){.intro{padding-block:2.5rem 1.5rem}}
+.hero-cta{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.4rem}
 .btn{display:inline-block;text-decoration:none;padding:.8rem 1.3rem;border-radius:3px;font-weight:700;border:1px solid var(--green);background:var(--green);color:var(--green-ink)}
 .btn.ghost{background:transparent;color:var(--green)}
 .hours-note{margin-top:1.4rem;display:inline-flex;gap:.6rem;align-items:center;background:var(--soft);padding:.5rem .8rem;border-left:4px solid var(--blue);font-size:.92rem}
