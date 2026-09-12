@@ -26,7 +26,10 @@ TEL_HREF = 'tel:+886228230080'
 FAX = '02-2821-0278'
 EMAIL = 'suntreeyang@gmail.com'
 ADDRESS = ('台北市北投區東華街二段210號', 'No. 210, Sec. 2, Donghua St, Beitou District, Taipei')
-MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=' + '%E5%8F%B0%E5%8C%97%E5%B8%82%E5%8C%97%E6%8A%95%E5%8D%80%E6%9D%B1%E8%8F%AF%E8%A1%97%E4%BA%8C%E6%AE%B5210%E8%99%9F'
+ADDR_Q = '%E5%8F%B0%E5%8C%97%E5%B8%82%E5%8C%97%E6%8A%95%E5%8D%80%E6%9D%B1%E8%8F%AF%E8%A1%97%E4%BA%8C%E6%AE%B5210%E8%99%9F'  # url-encoded zh address
+MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=' + ADDR_Q
+# Google's keyless embed: interactive map centred on the shop address, UI in the page language.
+MAP_EMBED = 'https://www.google.com/maps?q=' + ADDR_Q + '&z=17&output=embed&hl={hl}'
 
 # ---------------------------------------------------------------- copy (zh, en)
 T = {
@@ -57,6 +60,7 @@ T = {
     'h_contact':   ('聯絡我們', 'Contact'),
     'mrt':         ('捷運淡水信義線 唭哩岸站，步行約 4 分鐘', 'MRT Red Line, Qilian station, about 4 minutes on foot'),
     'maps':        ('在 Google 地圖開啟', 'Open in Google Maps'),
+    'map_title':   ('租八借 地圖', 'Map of 租八借'),
     'tel':         ('電話', 'Tel'),
     'fax':         ('傳真', 'Fax'),
 
@@ -207,6 +211,11 @@ def img_or_placeholder(c, it, cls=''):
 def hours_rows(lang):
     return ''.join(f'<div><dt>{pick(d, lang)}</dt><dd>{pick(h, lang)}</dd></div>' for d, h in HOURS)
 
+def map_embed(lang):
+    src = MAP_EMBED.format(hl='zh-TW' if lang == 'zh' else 'en')
+    return (f'<div class="map"><iframe src="{src}" title="{t("map_title", lang)}" loading="lazy" '
+            f'referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>')
+
 def cat_links(c, current=None, counts=True):
     out = []
     for cat in CATS:
@@ -337,6 +346,7 @@ def page_home(lang):
     <h2>{t('h_find', lang)}</h2>
     <p>{pick(ADDRESS, lang)}</p>
     <p>{t('mrt', lang)}</p>
+    {map_embed(lang)}
     <p class="mt"><a class="btn ghost" href="{c.link('contact.html')}">{t('cta_contact', lang)}</a></p>
   </div>
 </div></section>'''
@@ -405,22 +415,28 @@ def page_policy(lang):
 
 def page_contact(lang):
     c = Ctx(lang, 'contact.html')
-    body = f'''<section><div class="wrap info">
-  <div>
-    <h1>{t('h_contact', lang)}</h1>
-    <div class="addr">
-      <p><strong>租八借</strong></p>
-      <p>{pick(ADDRESS, lang)}</p>
-      <p>{t('mrt', lang)}</p>
-      <p><a href="{MAPS_URL}" rel="noopener">{t('maps', lang)}</a></p>
-      <p class="mt">{t('tel', lang)} <a href="{TEL_HREF}">{TEL}</a></p>
-      <p>{t('fax', lang)} {FAX}</p>
-      <p>Email <a href="mailto:{EMAIL}">{EMAIL}</a></p>
+    body = f'''<section><div class="wrap">
+  <h1>{t('h_contact', lang)}</h1>
+  <div class="contact">
+    {map_embed(lang)}
+    <div class="details">
+      <div class="addr">
+        <h2>{t('h_find', lang)}</h2>
+        <p>{pick(ADDRESS, lang)}</p>
+        <p>{t('mrt', lang)}</p>
+        <p><a href="{MAPS_URL}" rel="noopener">{t('maps', lang)}</a></p>
+      </div>
+      <div class="addr">
+        <h2>{t('tel', lang)}</h2>
+        <p><a href="{TEL_HREF}">{TEL}</a></p>
+        <p>{t('fax', lang)} {FAX}</p>
+        <p>Email <a href="mailto:{EMAIL}">{EMAIL}</a></p>
+      </div>
+      <div>
+        <h2>{t('h_hours', lang)}</h2>
+        <dl class="hours">{hours_rows(lang)}</dl>
+      </div>
     </div>
-  </div>
-  <div>
-    <h2>{t('h_hours', lang)}</h2>
-    <dl class="hours">{hours_rows(lang)}</dl>
   </div>
 </div></section>'''
     sep = '｜' if lang == 'zh' else ' | '
@@ -531,6 +547,15 @@ section h1{font-size:2rem;margin-bottom:1.2rem}
 .hours div{display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--rule)}
 .hours dt{font-weight:500}.hours dd{margin:0;font-variant-numeric:tabular-nums}
 .addr p{margin:.2rem 0}
+
+/* map + contact */
+.map{border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--paper);aspect-ratio:4/3;margin-top:1rem}
+.map iframe{display:block;width:100%;height:100%;border:0}
+.contact{display:grid;gap:2rem}
+@media (min-width:860px){.contact{grid-template-columns:1.2fr 1fr;gap:3rem;align-items:start}.contact .map{aspect-ratio:auto;height:100%;min-height:460px;margin-top:0}}
+.contact .details{display:grid;gap:2rem}
+.contact h2{font-size:1.25rem;margin-bottom:.5rem}
+.contact .addr p{margin:.2rem 0}
 
 /* catalog */
 .cat-head{padding-block:2.5rem 1.5rem}
