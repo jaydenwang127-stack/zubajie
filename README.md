@@ -33,6 +33,8 @@ That rebuilds, commits, pushes `main`, and force-pushes `site/` to `gh-pages`. P
 If the site moves to its own domain, change `BASE_URL` at the top of `build_site.py` and run `./deploy.sh` again so the `hreflang` tags and `sitemap.xml` follow.
 
 ## Pending owner input (site shows placeholders until then)
+- **The shop moved.** Address, hours and the 如何前往 route come from the Google listing and a customer review (`docs/05-google-listing.md`), not from the owner yet.
+- Entrance photo: save one as `prototype/photos/entrance.jpg` and rebuild; the Find-us page picks it up.
 - Policy page: six headings, each "待與老闆確認 / to be confirmed with the owner".
 - 29 items carry a visible price-conflict note (`conf` in items.json).
 - Footer note says prices are carried over from the old site pending confirmation. Remove `foot_note` from `T` in `build_site.py` once confirmed.

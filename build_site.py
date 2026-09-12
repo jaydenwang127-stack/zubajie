@@ -12,6 +12,7 @@ import json
 import pathlib
 import re
 import shutil
+import urllib.parse
 
 ROOT = pathlib.Path(__file__).parent
 OUT = ROOT / 'site'
@@ -25,11 +26,17 @@ TEL = '02-2823-0080'
 TEL_HREF = 'tel:+886228230080'
 FAX = '02-2821-0278'
 EMAIL = 'suntreeyang@gmail.com'
-ADDRESS = ('台北市北投區東華街二段210號', 'No. 210, Sec. 2, Donghua St, Beitou District, Taipei')
-ADDR_Q = '%E5%8F%B0%E5%8C%97%E5%B8%82%E5%8C%97%E6%8A%95%E5%8D%80%E6%9D%B1%E8%8F%AF%E8%A1%97%E4%BA%8C%E6%AE%B5210%E8%99%9F'  # url-encoded zh address
-MAPS_URL = 'https://www.google.com/maps/search/?api=1&query=' + ADDR_Q
-# Google's keyless embed: interactive map centred on the shop address, UI in the page language.
-MAP_EMBED = 'https://www.google.com/maps?q=' + ADDR_Q + '&z=17&output=embed&hl={hl}'
+# Address and hours per the shop's Google Business listing (checked 2026-09-12), which
+# supersedes the old website: the shop moved to Lane 401 in 2025. Pending the owner's confirmation.
+ADDRESS = ('台北市北投區承德路七段401巷171號', 'No. 171, Lane 401, Sec. 7, Chengde Rd, Beitou District, Taipei')
+PLUS_CODE = '4G72+X2'
+GOOGLE_CID = '14844749536758240266'   # the listing's id on Google Maps
+ADDR_Q = '%E5%8F%B0%E5%8C%97%E5%B8%82%E5%8C%97%E6%8A%95%E5%8D%80%E6%89%BF%E5%BE%B7%E8%B7%AF%E4%B8%83%E6%AE%B5401%E5%B7%B7171%E8%99%9F'  # url-encoded zh address
+MAPS_URL = 'https://maps.google.com/?cid=' + GOOGLE_CID
+DIRECTIONS_URL = 'https://www.google.com/maps/dir/?api=1&destination=' + urllib.parse.quote('租八借 ') + ADDR_Q
+# Google's keyless embed, pointed at the listing so the pin carries the shop name and rating.
+MAP_EMBED = 'https://maps.google.com/maps?cid=' + GOOGLE_CID + '&z=17&output=embed&hl={hl}'
+ENTRANCE_PHOTO = ROOT / 'prototype' / 'photos' / 'entrance.jpg'   # drop a photo of the blue gate here
 
 # ---------------------------------------------------------------- copy (zh, en)
 T = {
@@ -37,20 +44,22 @@ T = {
     'nav_home':    ('首頁', 'Home'),
     'nav_rent':    ('租借裝備', 'Rent gear'),
     'nav_policy':  ('租借規則', 'Rental policy'),
+    'nav_find':    ('如何前往', 'Find us'),
     'nav_contact': ('聯絡我們', 'Contact'),
     'menu':        ('選單', 'Menu'),
     'lang_label':  ('語言', 'Language'),
 
     'site_title':  ('租八借｜北投戶外裝備出租', '租八借 · Outdoor gear rental in Beitou'),
-    'site_desc':   ('北投戶外裝備出租：露營、登山、溯溪、水上裝備。電話預約 02-2823-0080，捷運唭哩岸站步行約 4 分鐘。',
-                    'Outdoor gear rental in Beitou, Taipei: camping, hiking, river-tracing and water gear. Call 02-2823-0080. About 4 minutes on foot from MRT Qilian.'),
+    'site_desc':   ('北投戶外裝備出租：露營、登山、溯溪、水上裝備。電話預約 02-2823-0080，捷運唭哩岸站附近，週一、週五營業。',
+                    'Outdoor gear rental in Beitou, Taipei: camping, hiking, river-tracing and water gear. Call 02-2823-0080. Near MRT Qilian, open Mon & Fri.'),
     'hero_h1':     ('北投戶外裝備出租', 'Outdoor gear rental in Beitou'),
     'hero_p':      ('露營、登山、溯溪、水上裝備。電話預約，到店取還。',
                     'Camping, hiking, river-tracing and water gear. Book by phone, pick up in store.'),
     'cta_browse':  ('裝備與價格', 'Gear and prices'),
     'cta_call':    (f'撥打 {TEL}', f'Call {TEL}'),
-    'cta_contact': ('聯絡與交通', 'Contact and directions'),
-    'hours_note':  ('週三、週日公休 · 週六 15:00 打烊', 'Closed Wed & Sun · Saturday closes 15:00'),
+    'cta_contact': ('聯絡我們', 'Contact'),
+    'cta_find':    ('如何前往', 'How to find us'),
+    'hours_note':  ('只有週一、週五營業 14:00–20:00', 'Open Mon & Fri only, 14:00–20:00'),
 
     'h_cats':      ('租借裝備', 'Rent gear'),
     'h_how':       ('如何租借', 'How to rent'),
@@ -58,8 +67,24 @@ T = {
     'h_find':      ('店面位置', 'Location'),
     'h_policy':    ('租借規則', 'Rental policy'),
     'h_contact':   ('聯絡我們', 'Contact'),
-    'mrt':         ('捷運淡水信義線 唭哩岸站，步行約 4 分鐘', 'MRT Red Line, Qilian station, about 4 minutes on foot'),
+    'mrt':         ('捷運淡水信義線 唭哩岸站附近', 'Near MRT Qilian (Red Line)'),
     'maps':        ('在 Google 地圖開啟', 'Open in Google Maps'),
+    'directions':  ('Google 地圖導航', 'Get directions'),
+    'plus_code':   ('Plus Code', 'Plus code'),
+
+    # moved notice + find-us page
+    'moved_strip': ('我們搬家了：新址 承德路七段401巷171號 · 週一、五 14:00–20:00', 'We\'ve moved: now at No. 171, Lane 401, Sec. 7 Chengde Rd · Mon & Fri 14:00–20:00'),
+    'moved_short': ('我們搬家了，營業時間也改了', 'We\'ve moved and changed our hours'),
+    'moved_h':     ('我們搬家了', 'We\'ve moved'),
+    'moved_p':     ('租八借已從東華街搬到承德路七段401巷171號。營業時間也改為每週一、週五 14:00–20:00，其他日子公休，請先電話預約。',
+                    '租八借 has moved from Donghua St to No. 171, Lane 401, Sec. 7, Chengde Rd. Hours are now Mondays and Fridays, 14:00–20:00; closed on other days, so please call ahead.'),
+    'h_find_page': ('如何前往', 'How to find us'),
+    'h_route':     ('步行路線', 'Walking route'),
+    'h_entrance':  ('店門口長這樣', 'What the entrance looks like'),
+    'entrance_alt': ('租八借店門口：磚牆上的藍色鐵門，門上寫著 171', 'The 租八借 entrance: a blue metal gate in a brick wall, marked 171'),
+    'entrance_tbd': ('店門口照片，待拍攝', 'Entrance photo coming soon'),
+    'find_source': ('地址與營業時間取自 Google 商家頁面；路線提示來自顧客評論（2025 年 5 月）。待老闆確認。',
+                    'Address and hours from the Google Business listing; route tips from a customer review (May 2025). Pending confirmation with the owner.'),
     'map_title':   ('租八借 地圖', 'Map of 租八借'),
     'tel':         ('電話', 'Tel'),
     'fax':         ('傳真', 'Fax'),
@@ -76,8 +101,8 @@ T = {
                     'The old site lists two different prices for this item. Figures above are from this page, pending confirmation.'),
     'items_n':     ('{n} 項', '{n} items'),
 
-    'hours_short1': ('週一、二、四、五 10:00–20:00 · 週六 10:00–15:00', 'Mon Tue Thu Fri 10:00–20:00 · Sat 10:00–15:00'),
-    'hours_short2': ('國定假日 10:00–19:00 · 週三、週日公休', 'Holidays 10:00–19:00 · Closed Wed & Sun'),
+    'hours_short1': ('週一、週五 14:00–20:00', 'Mon & Fri 14:00–20:00'),
+    'hours_short2': ('其他日子公休 · 請先電話預約', 'Closed other days · Call ahead to reserve'),
     'foot_note':   ('價格取自舊網站 dbk.url.tw，待老闆確認後正式生效。',
                     'Prices carried over from the old site dbk.url.tw, pending the owner\'s confirmation.'),
 
@@ -87,17 +112,25 @@ T = {
 }
 
 HOURS = [
-    (('週一、二、四、五', 'Mon, Tue, Thu, Fri'), ('10:00–20:00', '10:00–20:00')),
-    (('週六', 'Saturday'), ('10:00–15:00', '10:00–15:00')),
-    (('國定假日', 'Public holidays'), ('10:00–19:00', '10:00–19:00')),
-    (('週三、週日', 'Wednesday & Sunday'), ('公休', 'Closed')),
+    (('週一', 'Monday'), ('14:00–20:00', '14:00–20:00')),
+    (('週二、三、四', 'Tue, Wed, Thu'), ('公休', 'Closed')),
+    (('週五', 'Friday'), ('14:00–20:00', '14:00–20:00')),
+    (('週六、週日', 'Sat & Sun'), ('公休', 'Closed')),
+]
+
+# Walking route, in order. From the Google listing address and a customer's review photos.
+ROUTE = [
+    ('到承德路七段，轉進 401 巷。', 'On Sec. 7, Chengde Rd, turn into Lane 401.'),
+    ('沿巷子往高架橋的方向走，到籃球場前的轉彎處。', 'Follow the lane toward the elevated road, to the bend just before the basketball court.'),
+    ('找磚牆上的藍色鐵門，門上寫著 171，就是租八借。', 'Look for the blue metal gate in the brick wall, marked 171. That is 租八借.'),
+    ('門口有貓的那一扇不是喔。', 'The gate with the cat outside is not it.'),
 ]
 
 STEPS = [
     ('一', ('打電話預約', 'Call to reserve'),
      ('告訴我們日期和需要的裝備，我們幫你留。', 'Tell us the dates and what you need; we hold it for you.')),
     ('二', ('到店取件', 'Pick up in store'),
-     ('捷運唭哩岸站步行 4 分鐘。鞋子、防寒衣可現場試穿。', '4 minutes on foot from MRT Qilian. Try on shoes and wetsuits in the shop.')),
+     ('捷運唭哩岸站附近，找藍色鐵門。鞋子、防寒衣可現場試穿。', 'Near MRT Qilian; look for the blue gate. Try on shoes and wetsuits in the shop.')),
     ('三', ('歸還', 'Return'),
      ('營業時間內送回店裡。', 'Return to the shop during opening hours.')),
 ]
@@ -234,7 +267,8 @@ def header(c, nav):
     zh_href = c.twin if L == 'en' else '#'
     en_href = c.twin if L == 'zh' else '#'
     first_cat = c.link('rent/camping.html')
-    return f'''<header>
+    return f'''<a class="moved" href="{c.link('find.html')}"><span class="full">{t('moved_strip', L)}</span><span class="short">{t('moved_short', L)}</span> <b>{t('nav_find', L)} ›</b></a>
+<header>
   <div class="wrap">
     <a class="brand" href="{c.link('index.html')}">租八借<small>{t('brand_sub', L)}</small></a>
     <nav class="main" aria-label="{t('menu', L)}">
@@ -244,6 +278,7 @@ def header(c, nav):
         <div class="dd-menu">{cat_links(c)}</div>
       </div>
       <a href="{c.link('policy.html')}"{cur('policy')}>{t('nav_policy', L)}</a>
+      <a href="{c.link('find.html')}"{cur('find')}>{t('nav_find', L)}</a>
       <a href="{c.link('contact.html')}"{cur('contact')}>{t('nav_contact', L)}</a>
     </nav>
     <div class="lang" aria-label="{t('lang_label', L)}"><a href="{zh_href}" lang="zh-Hant-TW"{zh_cur}>中文</a><a href="{en_href}" lang="en"{en_cur}>EN</a></div>
@@ -255,6 +290,7 @@ def header(c, nav):
         <div class="grp">{t('nav_rent', L)}</div>
         <div class="sub">{cat_links(c, counts=False)}</div>
         <a href="{c.link('policy.html')}">{t('nav_policy', L)}</a>
+        <a href="{c.link('find.html')}">{t('nav_find', L)}</a>
         <a href="{c.link('contact.html')}">{t('nav_contact', L)}</a>
       </div>
     </details>
@@ -347,7 +383,7 @@ def page_home(lang):
     <p>{pick(ADDRESS, lang)}</p>
     <p>{t('mrt', lang)}</p>
     {map_embed(lang)}
-    <p class="mt"><a class="btn ghost" href="{c.link('contact.html')}">{t('cta_contact', lang)}</a></p>
+    <p class="mt"><a class="btn" href="{c.link('find.html')}">{t('cta_find', lang)}</a> <a class="btn ghost" href="{c.link('contact.html')}">{t('cta_contact', lang)}</a></p>
   </div>
 </div></section>'''
     return c, t('site_title', lang), t('site_desc', lang), body, 'home'
@@ -424,7 +460,7 @@ def page_contact(lang):
         <h2>{t('h_find', lang)}</h2>
         <p>{pick(ADDRESS, lang)}</p>
         <p>{t('mrt', lang)}</p>
-        <p><a href="{MAPS_URL}" rel="noopener">{t('maps', lang)}</a></p>
+        <p><a href="{MAPS_URL}" rel="noopener">{t('maps', lang)}</a> · <a href="{c.link('find.html')}">{t('cta_find', lang)}</a></p>
       </div>
       <div class="addr">
         <h2>{t('tel', lang)}</h2>
@@ -442,6 +478,51 @@ def page_contact(lang):
     sep = '｜' if lang == 'zh' else ' | '
     desc = f'{pick(ADDRESS, lang)}. {t("tel", lang)} {TEL}. {t("hours_short1", lang)}. {t("hours_short2", lang)}'
     return c, f'{t("h_contact", lang)}{sep}租八借', desc, body, 'contact'
+
+def page_find(lang):
+    c = Ctx(lang, 'find.html')
+    route = ''.join(f'<li>{pick(step, lang)}</li>' for step in ROUTE)
+    if ENTRANCE_PHOTO.exists():
+        photo = f'<img src="{c.photo("entrance")}" alt="{t("entrance_alt", lang)}" loading="lazy">'
+    else:
+        photo = f'<div class="ph">{t("entrance_tbd", lang)}</div>'
+    body = f'''<section><div class="wrap">
+  <h1>{t('h_find_page', lang)}</h1>
+  <div class="moved-box">
+    <h2>{t('moved_h', lang)}</h2>
+    <p>{t('moved_p', lang)}</p>
+  </div>
+  <div class="find">
+    <div>
+      {map_embed(lang)}
+      <p class="mt"><a class="btn" href="{DIRECTIONS_URL}" rel="noopener">{t('directions', lang)}</a> <a class="btn ghost" href="{MAPS_URL}" rel="noopener">{t('maps', lang)}</a></p>
+    </div>
+    <div class="details">
+      <div class="addr">
+        <h2>{t('h_find', lang)}</h2>
+        <p>{pick(ADDRESS, lang)}</p>
+        <p>{t('mrt', lang)}</p>
+        <p><span class="muted">{t('plus_code', lang)}</span> {PLUS_CODE}</p>
+      </div>
+      <div>
+        <h2>{t('h_route', lang)}</h2>
+        <ol class="route">{route}</ol>
+      </div>
+      <div>
+        <h2>{t('h_entrance', lang)}</h2>
+        <figure class="entrance">{photo}</figure>
+      </div>
+      <div>
+        <h2>{t('h_hours', lang)}</h2>
+        <dl class="hours">{hours_rows(lang)}</dl>
+      </div>
+    </div>
+  </div>
+  <p class="source">{t('find_source', lang)}</p>
+</div></section>'''
+    sep = '｜' if lang == 'zh' else ' | '
+    desc = f'{t("moved_p", lang)}'
+    return c, f'{t("h_find_page", lang)}{sep}租八借', desc, body, 'find'
 
 def page_404(lang):
     c = Ctx(lang, '404.html')
@@ -465,6 +546,13 @@ img{max-width:100%}
 .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:20px}
 @media (min-width:720px){.wrap{padding-inline:32px}}
 .mt{margin-top:1rem!important}
+
+/* moved notice strip */
+.moved{display:flex;justify-content:center;align-items:baseline;gap:.6rem;flex-wrap:wrap;background:var(--blue);color:#fff;text-decoration:none;font-size:.85rem;padding:.5rem 20px;text-align:center;line-height:1.4}
+.moved b{white-space:nowrap}
+.moved .full{display:none}
+@media (min-width:720px){.moved .full{display:inline}.moved .short{display:none}}
+.moved:hover b{text-decoration:underline}
 
 /* header */
 header{background:var(--green);color:var(--green-ink);position:sticky;top:0;z-index:20}
@@ -557,6 +645,22 @@ section h1{font-size:2rem;margin-bottom:1.2rem}
 .contact h2{font-size:1.25rem;margin-bottom:.5rem}
 .contact .addr p{margin:.2rem 0}
 
+/* find us */
+.moved-box{background:var(--paper);border-left:4px solid var(--blue);padding:1rem 1.2rem;margin-bottom:2rem;max-width:720px}
+.moved-box h2{font-size:1.2rem;margin-bottom:.4rem}
+.moved-box p{margin:0;color:var(--mute)}
+.find{display:grid;gap:2rem}
+@media (min-width:860px){.find{grid-template-columns:1.2fr 1fr;gap:3rem;align-items:start}.find .map{aspect-ratio:auto;height:420px;margin-top:0}}
+.find .details{display:grid;gap:2rem}
+.find h2{font-size:1.25rem;margin-bottom:.5rem}
+.find .addr p{margin:.2rem 0}
+.muted{color:var(--mute)}
+.route{margin:0;padding-left:1.4rem;display:grid;gap:.5rem}
+.route li::marker{color:var(--blue);font-weight:700}
+.entrance{margin:0;background:var(--paper);border:1px solid var(--rule);border-radius:4px;overflow:hidden;aspect-ratio:4/3;display:grid;place-items:center}
+.entrance img{width:100%;height:100%;object-fit:cover;display:block}
+.source{margin-top:2.5rem;font-size:.85rem;color:var(--mute);max-width:720px}
+
 /* catalog */
 .cat-head{padding-block:2.5rem 1.5rem}
 .cat-head h1{font-size:2rem}
@@ -637,6 +741,7 @@ def main():
         pages.append(page_home(lang))
         pages.append(page_policy(lang))
         pages.append(page_contact(lang))
+        pages.append(page_find(lang))
         pages.append(page_404(lang))
         for cat in CATS:
             pages.append(page_cat(lang, cat))
