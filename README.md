@@ -22,7 +22,15 @@ python3 -m http.server 8000 --directory site
 Then open http://localhost:8000/ (Chinese) or http://localhost:8000/en/ (English).
 
 ## Deploy
-Upload the contents of `site/` to any static host (GitHub Pages, Netlify, Cloudflare Pages). All links are relative, so it also works from a sub-path. Once the site has a domain, set `BASE_URL` at the top of `build_site.py` and rebuild: that adds `hreflang` alternates and `sitemap.xml`.
+Live at https://jaydenwang127-stack.github.io/zubajie/ (GitHub Pages, repo `jaydenwang127-stack/zubajie`). `main` holds the source; the `gh-pages` branch holds the contents of `site/` and is what Pages serves.
+
+After any change:
+```
+./deploy.sh
+```
+That rebuilds, commits, pushes `main`, and force-pushes `site/` to `gh-pages`. Pages updates in about a minute.
+
+If the site moves to its own domain, change `BASE_URL` at the top of `build_site.py` and run `./deploy.sh` again so the `hreflang` tags and `sitemap.xml` follow.
 
 ## Pending owner input (site shows placeholders until then)
 - Policy page: six headings, each "待與老闆確認 / to be confirmed with the owner".
