@@ -47,6 +47,7 @@ T = {
     'nav_policy':  ('租借規則', 'Rental policy'),
     'nav_find':    ('如何前往', 'Find us'),
     'h_reviews':   ('顧客評論', 'Reviews'),
+    'rv_top':      ('Google 高評價', 'Top rated on Google'),
     'rv_on':       ('{n} 則評論，來自', '{n} reviews on'),
     'rv_write':    ('到 Google 評論我們', 'Review us on Google'),
     'rv_all':      ('看全部評論', 'See all reviews'),
@@ -56,7 +57,7 @@ T = {
     'rv_translated': ('翻譯自英文', 'Translated from Chinese'),
     'rv_source':   ('評論摘錄自 Google 地圖上的租八借商家頁面，原文照登；日期為 2026 年 9 月 Google 顯示的相對時間，翻譯為本站提供。',
                     'Quoted from the 租八借 listing on Google Maps, as written; dates are as Google showed them in September 2026; translations are ours.'),
-    'rv_badge':    ('Google 評論 {r} ★ · {n} 則', 'Google {r} ★ · {n} reviews'),
+    'rv_badge':    ('Google 高評價 · {n} 則評論', 'Top rated on Google · {n} reviews'),
     'nav_contact': ('聯絡我們', 'Contact'),
     'menu':        ('選單', 'Menu'),
     'lang_label':  ('語言', 'Language'),
@@ -268,7 +269,13 @@ def hours_rows(lang):
 def stars(n, size=''):
     full = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg>'
     off = full.replace('<svg', '<svg class="off"')
-    return f'<span class="stars{size}" role="img" aria-label="{n}/5">{full * n}{off * (5 - n)}</span>'
+    whole = int(n); frac = round((n - whole) * 100)
+    out = full * whole
+    if frac:
+        out += f'<span class="part">{off}<span style="width:{frac}%">{full}</span></span>'
+        whole += 1
+    out += off * (5 - whole)
+    return f'<span class="stars{size}" role="img" aria-label="{n}/5">{out}</span>'
 
 def map_embed(lang):
     src = MAP_EMBED.format(hl='zh-TW' if lang == 'zh' else 'en')
@@ -389,7 +396,7 @@ def page_home(lang):
   <p>{t('hero_p', lang)}</p>
   <div class="hero-cta"><a class="btn" href="{c.link('rent/camping.html')}">{t('cta_browse', lang)}</a><a class="btn ghost" href="{TEL_HREF}">{t('cta_call', lang)}</a></div>
   <div class="hours-note">{t('hours_note', lang)}</div>
-  <p class="gbadge"><a href="{c.link('contact.html')}#reviews">{stars(4, ' sm')} {t('rv_badge', lang, r=REVIEWS['rating'], n=REVIEWS['count'])}</a></p>
+  <p class="gbadge"><a href="{c.link('contact.html')}#reviews">{stars(REVIEWS['rating'], ' sm')} {t('rv_badge', lang, n=REVIEWS['count'])}</a></p>
 </div></div>
 <section><div class="wrap">
   <h2>{t('h_cats', lang)}</h2>
@@ -589,8 +596,8 @@ def reviews_widget(c, lang, limit=8):
   <h2>{t('h_reviews', lang)}</h2>
   <div class="rv-top">
     <div class="rv-score">
-      <b>{rating}</b>
-      {stars(4)}
+      <b>{t('rv_top', lang)}</b>
+      {stars(rating)}
       <p>{t('rv_on', lang, n=n)} {google_word()}</p>
       <a class="btn" href="{WRITE_REVIEW_URL}" rel="noopener">{t('rv_write', lang)}</a>
       <a class="all" href="{REVIEWS['listing_url']}" rel="noopener">{t('rv_all', lang)} ›</a>
@@ -598,7 +605,6 @@ def reviews_widget(c, lang, limit=8):
     <div class="rv-digest">
       <h3>{t('rv_digest_h', lang)}</h3>
       <small>{t('rv_digest_sub', lang, n=n)}</small>
-      {stars(5)}
       <ul>{themes}</ul>
     </div>
   </div>
@@ -747,6 +753,8 @@ section h1{font-size:2rem;margin-bottom:1.2rem}
 .stars svg{width:18px;height:18px;fill:#FABB05}
 .stars svg.off{fill:#D6DACB}
 .stars.sm svg{width:14px;height:14px}
+.stars .part{position:relative;display:inline-block;line-height:0}
+.stars .part>span{position:absolute;left:0;top:0;overflow:hidden;display:block}
 .gword{font-family:"Product Sans",Arial,sans-serif;font-weight:700;letter-spacing:-.02em}
 .gword span:nth-child(1){color:#4285F4}.gword span:nth-child(2){color:#EA4335}.gword span:nth-child(3){color:#FBBC05}.gword span:nth-child(4){color:#4285F4}.gword span:nth-child(5){color:#34A853}.gword span:nth-child(6){color:#EA4335}
 .gbadge{margin:1rem 0 0;font-size:.9rem}
@@ -757,7 +765,7 @@ section h1{font-size:2rem;margin-bottom:1.2rem}
 @media (min-width:720px){.rv-top{grid-template-columns:1fr 1.4fr;gap:1.25rem}}
 .rv-score,.rv-digest,.rv{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:1.4rem 1.3rem}
 .rv-score{text-align:center;display:grid;justify-items:center;gap:.35rem}
-.rv-score b{font-family:"Noto Serif TC",serif;font-size:3.2rem;line-height:1;letter-spacing:-.02em}
+.rv-score b{font-family:"Noto Serif TC",serif;font-size:1.6rem;line-height:1.2;margin-bottom:.2rem}
 .rv-score .stars svg{width:24px;height:24px}
 .rv-score p{margin:0 0 .6rem;color:var(--mute);font-size:.95rem}
 .rv-score .btn{border-radius:999px;padding:.7rem 1.4rem}
